@@ -11,7 +11,7 @@ public class AccountTest {
 
     @BeforeEach
     public void setUp() {
-        account = new Account("12345", AccountType.SAVINGS, 1000.0);
+        account = new Account("12345", "Alice Johnson", AccountType.SAVINGS, 1000.0);
 
     }
 
@@ -21,20 +21,13 @@ public class AccountTest {
     }
 
     @Test
-    public void testGetBalance() {
-        assertEquals(1000.0, account.getBalance());
+    public void testGetCurrentBalance() {
+        assertEquals(1000.0, account.getCurrentBalance());
     }
 
     @Test
-    public void testGetAccountOwnerNameInitiallyNull() {
-        assertEquals(null, account.getAccountOwnerName());
-    }
-
-    @Test
-    public void testAccountNotNullAfterCreation() {
-        String expectedOwnerName = "TestOwnerName";
-        account.setAccountOwnerName(expectedOwnerName);
-        assertEquals(expectedOwnerName, account.getAccountOwnerName());
+    public void testAccounOwnerName() {
+        assertEquals("Alice Johnson", account.getAccountOwnerName());
     }
 
     @Test

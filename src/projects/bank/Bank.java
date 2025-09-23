@@ -2,42 +2,61 @@ package projects.bank;
 
 public class Bank {
     private Account[] accounts;
-    private int accountCount;
-    // remove this private field and inject in the constructor instead
-    private int bankCapacity; // Set a default value or use a constructor parameter
+    private int accountCount = 0;
+    public int index;
 
-    public Bank(int capacity) {
-        bankCapacity = capacity;
-        accounts = new Account[bankCapacity];
+    // This bank will hold 392 accounts for this project.
+    public Bank() {
+        accounts = new Account[392];
     }
 
-    public void addAccount(Account account) {
-        if (accountCount >= bankCapacity) {
-            throw new IllegalArgumentException("Bank capacity is full: " + getNumberOfAccounts());
-        } else if (findAccountById(account.getAccountId()) != null) {
-            throw new IllegalArgumentException("Account with ID " + account.getAccountId() + " already exists.");
-        } else {
-            accounts[accountCount++] = account;
-            System.out.println("Account added: " + account.getAccountId());
+    // Confirm that an account is added to the bank
+    public boolean addAccount(Account account) {
+        if (account == null) {
+            return false;
         }
+        // Check if account ID is unique
+        if (findAccountById(account.getAccountId()) != -1) {
+            // Account with same ID already exists
+            return false;
+        }
+        // Resize array if needed
+        if (accountCount == accounts.length) {
+            Account[] newAccounts = new Account[accounts.length * 2];
+            System.arraycopy(accounts, 0, newAccounts, 0, accounts.length);
+            accounts = newAccounts;
+            accounts[accountCount++] = account;
+            return true;
+        }
+        accounts[accountCount++] = account;
+        return true;
     }
 
-    public Account findAccountById(String accountId) {
-        if (accountId != null && !accountId.isEmpty()) {
-            // accountId is not null and not empty
+    // returns the index of the account in the array or null if not found
+    public int findAccountById(String ACCOUNTID) {
+        if (ACCOUNTID == null)// accountId is not null and not empty
+        {
+            throw new IllegalArgumentException("Account ID cannot be null or empty.");
+        } else if (ACCOUNTID != null && !ACCOUNTID.isEmpty()) {
             for (int i = 0; i < accountCount; i++) {
-                if (accounts[i].getAccountId().equals(accountId)) {
-                    return accounts[i];
+                if (accounts[i].getAccountId().equals(ACCOUNTID)) {
+                    index = i;
+                    return i;
                 }
             }
-            return null;
-        } else {
-            throw new IllegalArgumentException("Account ID cannot be null or empty.");
         }
+        return -1; // Account not found
     }
 
+    // New method to get the number of active accounts in the bank
     public int getNumberOfAccounts() {
-        return accountCount;
+        int count = 0;
+        for (int i = 0; i < accounts.length; i++) {
+            if (accounts[i] != null) {
+                count++;
+            }
+        }
+        return count;
     }
 
     // New method to get all accounts for a given account owner name
@@ -56,6 +75,5 @@ public class Bank {
             return accountsBySameOwner;
         }
         throw new IllegalArgumentException("Account owner name cannot be null or empty.");
-
     }
 }

@@ -3,35 +3,49 @@ package projects.bank;
 import projects.bank.Enum.AccountType;
 
 public class Account {
-    private String accountId;
-    private String accountOwnerName;
-    private double currentBalance;
-    private AccountType accountType;
 
-    public Account(String accountNumber, AccountType type, double startingBalance) {
-        accountId = accountNumber;
-        accountType = type;
+    private final String ACCOUNTID;
+    private final String ACCOUNTOWNERNAME;
+    private double currentBalance;
+    private final AccountType ACCOUNTTYPE;
+
+    public Account(String accountNumber, String Name, AccountType type, double startingBalance) {
+
+        /**
+         * Each account will hold the following values:
+         * 
+         * @param ACCOUNTID        - alphanumeric Unique account identifier, definitive
+         *                         value
+         * 
+         * @param ACCOUNTOWNERNAME - Name of the account owner, could be repeated across
+         *                         accounts, definitive value
+         * 
+         * @param currentBalance   - Current balance of the account, could be negative ,
+         *                         variable value
+         * 
+         * @param ACCOUNTTYPE      - Type of account (Checking, Savings), definitive
+         *                         value
+         * 
+         **/
+        ACCOUNTID = accountNumber;
+        ACCOUNTOWNERNAME = Name;
+        ACCOUNTTYPE = type;
         currentBalance = startingBalance;
     }
 
     public String getAccountId() {
-        return accountId;
+        return ACCOUNTID;
     }
 
     public String getAccountOwnerName() {
-        return accountOwnerName;
+        return ACCOUNTOWNERNAME;
     }
 
-    public void setAccountOwnerName(String name) {
-        this.accountOwnerName = name;
-    }
-
-    // update method name to getCurrentBalance()
-    public double getBalance() {
+    public double getCurrentBalance() {
         return currentBalance;
     }
 
     public AccountType getAccountType() {
-        return accountType;
+        return ACCOUNTTYPE;
     }
 }
