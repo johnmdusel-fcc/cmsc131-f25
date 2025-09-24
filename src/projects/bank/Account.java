@@ -27,6 +27,18 @@ public class Account {
          *                         value
          * 
          **/
+        //Added data validation on Account ID and Account owner name.
+        if (accountNumber == null){
+            throw new IllegalArgumentException (
+                "Account ID cannot be empty."
+            );
+        }
+        if (Name == null){
+            throw new IllegalArgumentException (
+                "Account owner's name cannot be empty."
+            );
+        }
+        
         ACCOUNTID = accountNumber;
         ACCOUNTOWNERNAME = Name;
         ACCOUNTTYPE = type;
@@ -34,18 +46,18 @@ public class Account {
     }
 
     public String getAccountId() {
-        return ACCOUNTID;
+    return ACCOUNTID;
     }
 
     public String getAccountOwnerName() {
-        return ACCOUNTOWNERNAME;
+    return ACCOUNTOWNERNAME;
     }
 
     public double getCurrentBalance() {
-        return currentBalance;
+    return currentBalance;
     }
 
     public AccountType getAccountType() {
-        return ACCOUNTTYPE;
+    return ACCOUNTTYPE;
     }
 }
