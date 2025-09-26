@@ -12,9 +12,6 @@ public class Bank {
 
     // Confirm that an account is added to the bank
     public boolean addAccount(Account account) {
-        if (account == null) {
-            return false;
-        }
         // Check if account ID is unique
         if (findAccountById(account.getAccountId()) != -1) {
             // Account with same ID already exists
@@ -28,21 +25,17 @@ public class Bank {
             accounts[accountCount++] = account;
             return true;
         }
+        // Else, simply add the account
         accounts[accountCount++] = account;
         return true;
     }
 
     // returns the index of the account in the array or null if not found
     public int findAccountById(String ACCOUNTID) {
-        if (ACCOUNTID == null)// accountId is not null and not empty
-        {
-            throw new IllegalArgumentException("Account ID cannot be null or empty.");
-        } else if (ACCOUNTID != null && !ACCOUNTID.isEmpty()) {
-            for (int i = 0; i < accountCount; i++) {
-                if (accounts[i].getAccountId().equals(ACCOUNTID)) {
-                    index = i;
-                    return i;
-                }
+        for (int i = 0; i < accountCount; i++) {
+            if (accounts[i].getAccountId().equals(ACCOUNTID)) {
+                index = i;
+                return i;
             }
         }
         return -1; // Account not found
@@ -61,19 +54,14 @@ public class Bank {
 
     // New method to get all accounts for a given account owner name
     public Account[] getAllAccountsByOwnerName(String accountOwnerName) {
-        if (accountOwnerName != null && !accountOwnerName.isEmpty()) {
-            // Collect matching accounts
-            // declare a temporary array to hold matches and set a match count to 100
-            Account[] accountsBySameOwner = new Account[10];
-            int j = 0;
-            for (int i = 0; i < accountCount; i++) {
-                if (accounts[i].getAccountOwnerName().equals(accountOwnerName)) {
-                    accountsBySameOwner[j++] = accounts[i];
-                }
+        // Declare a temporary array to hold matches and set a match count to 100
+        Account[] accountsBySameOwner = new Account[10];
+        int j = 0;
+        for (int i = 0; i < accountCount; i++) {
+            if (accounts[i].getAccountOwnerName().equals(accountOwnerName)) {
+                accountsBySameOwner[j++] = accounts[i];
             }
-
-            return accountsBySameOwner;
         }
-        throw new IllegalArgumentException("Account owner name cannot be null or empty.");
+        return accountsBySameOwner;
     }
 }
