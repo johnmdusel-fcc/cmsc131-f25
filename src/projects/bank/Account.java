@@ -1,16 +1,19 @@
 package projects.bank;
 
-import projects.bank.Enum.AccountType;
+// TODO remove following unnecessary line
+import projects.bank.Enum.AccountType;  
 
 public class Account {
 
+    // TODO style: change variable names to camelCase
     private final String ACCOUNTID;
     private final String ACCOUNTOWNERNAME;
-    private double currentBalance;
+    private double currentBalance;  // variable name OK
     private final AccountType ACCOUNTTYPE;
 
     public Account(String accountNumber, String Name, AccountType type, double startingBalance) {
 
+        // TODO move the javadoc to line 13. Also add @throws entry.
         /**
          * Each account will hold the following values:
          * 
