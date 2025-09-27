@@ -11,9 +11,17 @@ public class AccountTest {
 
     @BeforeEach
     public void setUp() {
-        account = new Account("12345", "Alice Johnson", AccountType.SAVINGS, 1000.0);
-
+        // easier to read when long lines are formatted like this
+        account = new Account(
+            "12345",
+            "Alice Johnson",
+            AccountType.SAVINGS,
+            1000.0
+        );
     }
+
+    // TODO add data validation tests for Account constructor
+    // see Accout.java lines 34 - 43
 
     @Test
     public void testGetAccountId() {
