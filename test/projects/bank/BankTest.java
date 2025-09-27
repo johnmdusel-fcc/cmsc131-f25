@@ -7,6 +7,7 @@ import projects.bank.Enum.AccountType;
 
 public class BankTest {
     // Our test bank will hold up to 392 accounts.
+    // TODO unnecessary to instantiate accounts on line 11
     private Account[] accounts = new Account[392];
     private Bank bank;
 
@@ -27,7 +28,8 @@ public class BankTest {
     @Test
     public void testAddAccount() {
         Account newAccount = new Account("A004", "Oliver Smith", AccountType.SAVINGS, 2500.0);
-        bank.addAccount(newAccount);
+        // TODO: get return value of call on line 32 and test against expected value, like on line 65
+        bank.addAccount(newAccount); 
         assertEquals(4, bank.getNumberOfAccounts());
         assertEquals(392, accounts.length);
     }
