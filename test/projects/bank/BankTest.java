@@ -3,66 +3,90 @@ package projects.bank;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import projects.bank.Enum.AccountType;
+import projects.bank.Account.AccountType;
 
 public class BankTest {
-    // Our test bank will hold up to 392 accounts.
-    // TODO unnecessary to instantiate accounts on line 11
-    private Account[] accounts = new Account[392];
-    private Bank bank;
 
+    private Bank bank = new Bank();
+
+    /**
+     * Set up a bank with a few accounts before each test.
+     *
+     */
     @BeforeEach
     public void setUp() {
-        // This sets three testing accounts with their reference for our test.
-        bank = new Bank();
+        Account[] accounts = new Account[392];// why do we need this line?
         accounts[0] = new Account("A001", "Alice Johnson", AccountType.SAVINGS, 1000.0);
         accounts[1] = new Account("A002", "Bethy White", AccountType.SAVINGS, 1500.0);
         accounts[2] = new Account("A003", "Alice Johnson", AccountType.CHECKING, 2000.0);
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < accounts.length; i++) {
             bank.addAccount(accounts[i]);
         }
     }
 
-    // this test checks that the number of accounts is correct after setup.
+    /**
+     * Check that a new account was successfully added.
+     * 
+     */
     @Test
-    public void testAddAccount() {
+    public void testAddAccountIsSuccessful() { // it says this point to null pointer exception
         Account newAccount = new Account("A004", "Oliver Smith", AccountType.SAVINGS, 2500.0);
-        // TODO: get return value of call on line 32 and test against expected value, like on line 65
-        bank.addAccount(newAccount); 
-        assertEquals(4, bank.getNumberOfAccounts());
-        assertEquals(392, accounts.length);
+        boolean expectedResult = true;
+        assertEquals(expectedResult, bank.addAccount(newAccount));
     }
 
-    // This test verifies that we can find the correct account's reference using the
-    // account ID.
+    /**
+     * Check that a new account was NOT added successfully because it
+     * already exist.
+     * 
+     */
+    @Test
+    public void testAddAccountIsNotSuccessful() {
+        Account existingAccount = new Account("A001", "Alice Johnson", AccountType.SAVINGS, 1000.0);
+        bank.addAccount(existingAccount);
+        boolean expectedResult = false;
+        assertEquals(expectedResult, bank.addAccount(existingAccount));
+    }
+
+    /**
+     * This test verifies that searching for an existing account ID returns the
+     * correct
+     * index.
+     * 
+     */
     @Test
     public void testFindAccountByAccountId() {
         assertEquals(1, bank.findAccountById("A002"));
     }
 
-    // This test verifies that searching for a non-existent account ID returns null.
+    /**
+     * This test verifies that searching for a non-existent account ID returns -1.
+     * 
+     */
     @Test
     public void testFindNonExistentAccount() {
         assertEquals(-1, bank.findAccountById("A999"));
     }
 
-    // This test checks that the number of a specific accoutn owner's accounts is
-    // correct.
+    /**
+     * This test verifies that the number of active accounts is returned correctly.
+     * 
+     */
     @Test
-    public void testGetAllAccountsByOwnerName() {
-        Account[] expectedAccount = new Account[2];
-        expectedAccount[0] = accounts[0];
-        expectedAccount[1] = accounts[2];
-        assertEquals(expectedAccount[0], bank.getAllAccountsByOwnerName("Alice Johnson")[0]);
-        assertEquals(expectedAccount[1], bank.getAllAccountsByOwnerName("Alice Johnson")[1]);
+    public void testGetNumberOfAccounts() {
+        assertEquals(4, bank.getNumberOfAccounts());
     }
 
-    // This test checks that adding an account with a duplicate ID is handled
+    /**
+     * This test verifies that all accounts for a given owner name are returned
+     * correctly.
+     * 
+     */
     @Test
-    public void testAddAccountWithDuplicateId() {
-        Account duplicateAccount = new Account("A002", "Anthony Smith", AccountType.CHECKING, 500.0);
-        boolean result = bank.addAccount(duplicateAccount);
-        assertEquals(false, result);
+    public void testGetAllAccountsByOwnerName() {
+        Account[] aliceJohnsonAccounts = new Account[2];
+        assertEquals(aliceJohnsonAccounts[0], bank.getAllAccountsByOwnerName("Alice Johnson")[0]);
+        assertEquals(aliceJohnsonAccounts[1], bank.getAllAccountsByOwnerName("Alice Johnson")[1]);
     }
 }
