@@ -6,7 +6,7 @@ public class Account {
     private final String accountOwnerName;
     private double currentBalance;
 
-    public enum AccountType {
+    public enum AccountType { // move to src/projects/bank/AccountType.java
         CHECKING, SAVINGS
     };
 
@@ -28,7 +28,9 @@ public class Account {
      *                         value
      * 
      */
-    public Account(String accountNumber, String Name, AccountType type, double startingBalance) {
+    public Account(String accountNumber, 
+    String Name, // TODO use correct camelCase for this parameter name
+    AccountType type, double startingBalance) {
         // Added data validation on Account ID and Account owner name.
         if (accountNumber == null) {
             throw new IllegalArgumentException(
