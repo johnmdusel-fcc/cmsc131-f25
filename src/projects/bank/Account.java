@@ -1,14 +1,10 @@
 package projects.bank;
 
-// TODO remove following unnecessary line
-//import projects.bank.Enum.AccountType;  
-
 public class Account {
 
-    // TODO style: change variable names to camelCase
-    private final String accountId;
+    private final String accountID;
     private final String accountOwnerName;
-    private double currentBalance; // variable name OK
+    private double currentBalance;
 
     public enum AccountType {
         CHECKING, SAVINGS
@@ -16,11 +12,10 @@ public class Account {
 
     private AccountType accountType;
 
-    // TODO move the javadoc to line 13. Also add @throws entry.
     /**
      * Each account will hold the following values:
      * 
-     * @param accountId        - alphanumeric Unique account identifier, definitive
+     * @param accountID        - alphanumeric Unique account identifier, definitive
      *                         value
      * 
      * @param accountOwnerName - Name of the account owner, could be repeated across
@@ -44,17 +39,17 @@ public class Account {
                     "Account owner's name cannot be empty.");
         }
 
-        accountId = accountNumber;
+        accountID = accountNumber;
         accountOwnerName = Name;
         accountType = type;
         currentBalance = startingBalance;
     }
 
-    public String getAccountId() {
-        return accountId;
+    public String getID() {
+        return accountID;
     }
 
-    public String getAccountOwnerName() {
+    public String getOwner() {
         return accountOwnerName;
     }
 
@@ -62,7 +57,7 @@ public class Account {
         return currentBalance;
     }
 
-    public AccountType getAccountType() {
+    public AccountType getType() {
         return accountType;
     }
 }

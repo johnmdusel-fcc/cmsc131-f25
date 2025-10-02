@@ -21,8 +21,6 @@ public class AccountTest {
                 1000.0);
     }
 
-    // TODO add data validation tests for Account constructor
-    // see Accout.java lines 34 - 43
     @Test
     void constructorThrowsForNullAccountId() {
         Exception exception = assertThrows(
@@ -55,7 +53,7 @@ public class AccountTest {
 
     @Test
     public void testGetAccountId() {
-        assertEquals("12345", account.getAccountId());
+        assertEquals("12345", account.getID());
     }
 
     @Test
@@ -65,11 +63,11 @@ public class AccountTest {
 
     @Test
     public void testAccounOwnerName() {
-        assertEquals("Alice Johnson", account.getAccountOwnerName());
+        assertEquals("Alice Johnson", account.getOwner());
     }
 
     @Test
     public void testAccountType() {
-        assertEquals(AccountType.SAVINGS, account.getAccountType());
+        assertEquals(AccountType.SAVINGS, account.getType());
     }
 }

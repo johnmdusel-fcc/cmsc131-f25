@@ -10,19 +10,13 @@ public class BankTest {
     private Bank bank = new Bank();
 
     /**
-     * Set up a bank with a few accounts before each test.
-     *
+     * This is our sample account already set up in the bank.
+     * 
      */
     @BeforeEach
-    public void setUp() {
-        Account[] accounts = new Account[392];// why do we need this line?
-        accounts[0] = new Account("A001", "Alice Johnson", AccountType.SAVINGS, 1000.0);
-        accounts[1] = new Account("A002", "Bethy White", AccountType.SAVINGS, 1500.0);
-        accounts[2] = new Account("A003", "Alice Johnson", AccountType.CHECKING, 2000.0);
-
-        for (int i = 0; i < accounts.length; i++) {
-            bank.addAccount(accounts[i]);
-        }
+    void setup() {
+        Account existingAccount = new Account("A001", "Alice Johnson", AccountType.SAVINGS, 1000.0);
+        bank.add(existingAccount);
     }
 
     /**
@@ -30,10 +24,10 @@ public class BankTest {
      * 
      */
     @Test
-    public void testAddAccountIsSuccessful() { // it says this point to null pointer exception
-        Account newAccount = new Account("A004", "Oliver Smith", AccountType.SAVINGS, 2500.0);
+    void testAddAccountIsSuccessful() {
+        Account newAccount = new Account("A002", "Oliver Smith", AccountType.SAVINGS, 2500.0);
         boolean expectedResult = true;
-        assertEquals(expectedResult, bank.addAccount(newAccount));
+        assertEquals(expectedResult, bank.add(newAccount));
     }
 
     /**
@@ -42,11 +36,10 @@ public class BankTest {
      * 
      */
     @Test
-    public void testAddAccountIsNotSuccessful() {
-        Account existingAccount = new Account("A001", "Alice Johnson", AccountType.SAVINGS, 1000.0);
-        bank.addAccount(existingAccount);
+    void testAddAccountIsNotSuccessful() {
+        Account toAdd = new Account("A001", "Alice Johnson", AccountType.SAVINGS, 1000.0);
         boolean expectedResult = false;
-        assertEquals(expectedResult, bank.addAccount(existingAccount));
+        assertEquals(expectedResult, bank.add(toAdd));
     }
 
     /**
@@ -56,8 +49,8 @@ public class BankTest {
      * 
      */
     @Test
-    public void testFindAccountByAccountId() {
-        assertEquals(1, bank.findAccountById("A002"));
+    void testFindAccountByAccountId() {
+        assertEquals(0, bank.find("A001"));
     }
 
     /**
@@ -65,8 +58,8 @@ public class BankTest {
      * 
      */
     @Test
-    public void testFindNonExistentAccount() {
-        assertEquals(-1, bank.findAccountById("A999"));
+    void testFindNonExistentAccount() {
+        assertEquals(-1, bank.find("A999"));
     }
 
     /**
@@ -74,8 +67,8 @@ public class BankTest {
      * 
      */
     @Test
-    public void testGetNumberOfAccounts() {
-        assertEquals(4, bank.getNumberOfAccounts());
+    void testGetNumberOfAccounts() {
+        assertEquals(1, bank.getCount());
     }
 
     /**
@@ -84,9 +77,10 @@ public class BankTest {
      * 
      */
     @Test
-    public void testGetAllAccountsByOwnerName() {
-        Account[] aliceJohnsonAccounts = new Account[2];
-        assertEquals(aliceJohnsonAccounts[0], bank.getAllAccountsByOwnerName("Alice Johnson")[0]);
-        assertEquals(aliceJohnsonAccounts[1], bank.getAllAccountsByOwnerName("Alice Johnson")[1]);
+    void testGetAccounts() {
+        Account secondAccount = new Account("A003", "Alice Johnson", AccountType.CHECKING, 2500.0);
+        bank.add(secondAccount);
+        int expectNumberOfAccounts = 2;
+        assertEquals(expectNumberOfAccounts, bank.getAccounts("Alice Johnson").length);
     }
 }

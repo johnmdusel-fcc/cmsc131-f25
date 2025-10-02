@@ -3,7 +3,6 @@ package projects.bank;
 public class Bank {
     private Account[] accounts;
     private int accountCount = 0;
-    // public int index; // is this attribute necessary? consider removing
 
     // This bank will hold 392 accounts for this project.
     public Bank() {
@@ -21,9 +20,9 @@ public class Bank {
      * @throws ArrayIndexOutOfBoundsException if the bank has reached its maximum
      *                                        capacity.
      */
-    public boolean addAccount(Account account) {
+    public boolean add(Account account) {
         // Check if account ID already exist
-        if (findAccountById(account.getAccountId()) != -1) {
+        if (find(account.getID()) != -1) {
             // Account with same ID already exists
             return false;
         }
@@ -46,6 +45,7 @@ public class Bank {
             if (accounts[i] == null) {
                 accounts[i] = account;
                 accountCount++;
+                break;
             }
         }
         return true;
@@ -54,14 +54,13 @@ public class Bank {
     /**
      * Find an account by its ID.
      * 
-     * @param accountId
+     * @param accountID the ID of the account to find.
      * 
      * @return returns the index of the account in the array or -1 if not found.
      */
-
-    public int findAccountById(String accountId) {
+    public int find(String accountID) {
         for (int i = 0; i < accounts.length; i++) {
-            if (accounts[i].getAccountId().equals(accountId)) {
+            if (accounts[i] != null && (accounts[i].getID().equals(accountID))) {
                 return i;
             }
         }
@@ -73,7 +72,7 @@ public class Bank {
      * 
      * @return the number of active accounts.
      */
-    public int getNumberOfAccounts() {
+    public int getCount() {
         return accountCount;
     }
 
@@ -84,10 +83,10 @@ public class Bank {
      * 
      * @return an array of accounts owned by the specified account owner name.
      */
-    public Account[] getAllAccountsByOwnerName(String accountOwnerName) {
+    public Account[] getAccounts(String OwnerName) {
         Account[] accountsBySameOwner = new Account[accountCount];
         for (int i = 0; i < accounts.length; i++) {
-            if (accounts[i].getAccountOwnerName().equals(accountOwnerName)) {
+            if (accounts[i] != null && accounts[i].getOwner().equals(OwnerName)) {
                 // style: it's clearer to increment j on a separate line
                 for (int j = 0; j < accountCount; j++) {
                     if (accountsBySameOwner[j] == null) {
@@ -100,4 +99,5 @@ public class Bank {
         }
         return accountsBySameOwner;
     } // End of for loop
+
 }
