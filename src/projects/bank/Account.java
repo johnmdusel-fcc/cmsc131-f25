@@ -4,45 +4,40 @@ public class Account {
 
     private final String accountID;
     private final String accountOwnerName;
-    private double currentBalance;
-
-    public enum AccountType { // move to src/projects/bank/AccountType.java
-        CHECKING, SAVINGS
-    };
-
     private AccountType accountType;
+    private double currentBalance;
 
     /**
      * Each account will hold the following values:
      * 
-     * @param accountID        - alphanumeric Unique account identifier, definitive
-     *                         value
+     * @param accountNumber   - alphanumeric Unique account identifier, definitive
+     *                        value
      * 
-     * @param accountOwnerName - Name of the account owner, could be repeated across
-     *                         accounts, definitive value
+     * @param name            - Name of the account owner, could be repeated across
+     *                        accounts, definitive value
      * 
-     * @param currentBalance   - Current balance of the account, could be negative ,
-     *                         variable value
+     * @param type            - Type of account (Checking, Savings), definitive
+     *                        value
      * 
-     * @param accountType      - Type of account (Checking, Savings), definitive
-     *                         value
+     * @param startingBalance - Current balance of the account, could be negative ,
+     *                        variable value
      * 
      */
-    public Account(String accountNumber, 
-    String Name, // TODO use correct camelCase for this parameter name
-    AccountType type, double startingBalance) {
-        // Added data validation on Account ID and Account owner name.
+    public Account(String accountNumber,
+            String name,
+            AccountType type,
+            double startingBalance) {
         if (accountNumber == null) {
             throw new IllegalArgumentException(
                     "Account ID cannot be empty.");
         }
-        if (Name == null) {
+        if (name == null) {
             throw new IllegalArgumentException(
                     "Account owner's name cannot be empty.");
         }
 
         accountID = accountNumber;
-        accountOwnerName = Name;
+        accountOwnerName = name;
         accountType = type;
         currentBalance = startingBalance;
     }

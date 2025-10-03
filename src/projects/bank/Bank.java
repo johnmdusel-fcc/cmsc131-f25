@@ -2,11 +2,12 @@ package projects.bank;
 
 public class Bank {
     private Account[] accounts;
-    private int accountCount = 0; // TODO set value in constructor
+    private int accountCount;
 
     // This bank will hold 392 accounts for this project.
     public Bank() {
         accounts = new Account[392];
+        accountCount = 0;
     }
 
     /**
@@ -27,14 +28,8 @@ public class Bank {
             return false;
         }
         // Otherwise, add the new account
-        try {
-            // Check if there's space in the bank database
-            if (accountCount >= accounts.length) {
-                throw new ArrayIndexOutOfBoundsException("Bank has reached its maximum capacity.");
-                // TODO there's no point to throwing here, since you'll always catch it below
-                // Remove the try-catch block then put the code from lines 38-43 into the conditional block
-            }
-        } catch (ArrayIndexOutOfBoundsException e) {
+        // what if accountCount is already at max capacity?
+        if (accountCount >= accounts.length) {
             Account[] newAccounts = new Account[accounts.length * 2];
             System.arraycopy(accounts, 0, newAccounts, 0, accounts.length);
             accounts = newAccounts;
@@ -61,7 +56,7 @@ public class Bank {
      * @return returns the index of the account in the array or -1 if not found.
      */
     public int find(String accountID) {
-        for (int i = 0; i < accounts.length; i++) { // TODO use accountCount
+        for (int i = 0; i < accountCount; i++) {
             if (accounts[i] != null && (accounts[i].getID().equals(accountID))) {
                 return i;
             }
