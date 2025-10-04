@@ -1,8 +1,8 @@
 package examples.geometry;
 
-public class Rectangle {
+public class Rectangle extends Shape {
 
-    private Point lowerLeft, upperRight;
+    private final Point lowerLeft, upperRight;
 
     public Rectangle(Point ll, Point ur) {
         if ( ll.getX() >= ur.getX() || ll.getY() >= ur.getY() ) {
@@ -14,6 +14,7 @@ public class Rectangle {
         upperRight = ur;
     }
 
+    @Override
     public boolean contains(Point xy) {
         return (
             // x coordinate is in range
@@ -23,6 +24,7 @@ public class Rectangle {
         );
     }
 
+    @Override
     public double getArea() {
         double base = upperRight.getX() - lowerLeft.getX();
         double height = upperRight.getY() - lowerLeft.getY();
