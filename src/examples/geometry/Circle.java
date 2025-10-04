@@ -6,6 +6,9 @@ public class Circle {
     private double radius;
 
     public Circle(Point c, double r) {
+        if (r <= 0) throw new IllegalArgumentException(
+            "Parameter radius must be positive."
+        );
         center = c;
         radius = r;
     }

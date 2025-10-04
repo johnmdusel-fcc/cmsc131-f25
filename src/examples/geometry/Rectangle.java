@@ -5,7 +5,11 @@ public class Rectangle {
     private Point lowerLeft, upperRight;
 
     public Rectangle(Point ll, Point ur) {
-        // TODO data validation: check orientation of ll and ur
+        if ( ll.getX() >= ur.getX() || ll.getY() >= ur.getY() ) {
+            throw new IllegalArgumentException(
+                "Points ll and ur are incorrectly oriented."
+            );
+        }
         lowerLeft = ll;
         upperRight = ur;
     }
