@@ -12,7 +12,6 @@ public class AccountTest {
 
     @BeforeEach
     public void setUp() {
-        // easier to read when long lines are formatted like this
         account = new Account(
                 "12345",
                 "Alice Johnson",
@@ -49,6 +48,8 @@ public class AccountTest {
         assertEquals("Account owner's name cannot be empty.",
                 exception.getMessage());
     }
+
+    // TODO test data validation for account type
 
     @Test
     public void testGetAccountId() {
