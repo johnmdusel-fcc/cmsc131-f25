@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 public class BankTest {
 
-    private Bank bank = new Bank();
+    private Bank bank;
 
     /**
      * This is our sample account already set up in the bank.
@@ -14,9 +14,12 @@ public class BankTest {
      */
     @BeforeEach
     void setup() {
+        bank = new Bank();
         Account existingAccount = new Account("A001", "Alice Johnson", AccountType.SAVINGS, 1000.0);
         bank.add(existingAccount);
     }
+
+    // TODO test data validation for `add` method
 
     /**
      * Check that a new account was successfully added.
@@ -40,6 +43,8 @@ public class BankTest {
         boolean expectedResult = false;
         assertEquals(expectedResult, bank.add(toAdd));
     }
+
+    // TODO test data validation for `find`
 
     /**
      * This test verifies that searching for an existing account ID returns the
