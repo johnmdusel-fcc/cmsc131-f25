@@ -22,6 +22,7 @@ public class Bank {
      *                                        capacity.
      */
     public boolean add(Account account) {
+        // TODO data validation
         // Check if account ID already exist
         if (find(account.getID()) != -1) {
             // Account with same ID already exists
@@ -30,6 +31,8 @@ public class Bank {
         // Otherwise, add the new account
         // what if accountCount is already at max capacity?
         if (accountCount >= accounts.length) {
+            // TODO doubling works fine here, but in a real-word project you'd want 
+            // to increase capacity by a fixed quantity each time (say add 100 new slots)
             Account[] newAccounts = new Account[accounts.length * 2];
             System.arraycopy(accounts, 0, newAccounts, 0, accounts.length);
             accounts = newAccounts;
@@ -56,7 +59,10 @@ public class Bank {
      * @return returns the index of the account in the array or -1 if not found.
      */
     public int find(String accountID) {
+        // TODO validate String parameter
         for (int i = 0; i < accountCount; i++) {
+            // TODO all accounts from 0 to accountCount will be non-null
+            // so you can simplify the condition on line 62
             if (accounts[i] != null && (accounts[i].getID().equals(accountID))) {
                 return i;
             }
