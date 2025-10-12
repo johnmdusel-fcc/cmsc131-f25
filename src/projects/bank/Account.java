@@ -68,13 +68,12 @@ public class Account {
 
     @Override 
     public String toString() {
-        double balancedFormatted = (int) (getBalance() * 100) / 100.0;
         return String.format(
-            "%s,%s,%s,%s",
+            "%s,%s,%s,%.2f", // format double to 2 decimal places
             getType().name().toLowerCase(),
             getID(),
             getOwnerName(),
-            balancedFormatted
+            getBalance()
         );
     }
 
