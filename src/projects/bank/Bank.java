@@ -119,5 +119,11 @@ public class Bank {
         }
     }
 
+    /**
+     * Instrumentation for phase 2 unit testing
+     * @return - Array of accounts for this bank.
+     */
+    public Account[] getAccounts() { return accounts; }
+
 }
 

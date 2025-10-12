@@ -13,7 +13,12 @@ public class BankTest {
     @BeforeEach
     void setup() {
         bank = new Bank();
-        acct = new Account("id0", "Owner Name", 1.0, AccountType.SAVINGS);
+        acct = new Account(
+            "id0",
+            "Owner Name",
+            1.0,
+            AccountType.SAVINGS
+        );
     }
 
     // tests for add method
@@ -102,6 +107,101 @@ public class BankTest {
             bank.find("id1"),
             "result should be -1 when finding absent account"
         );
+    }
+
+    // CSV I/O tests for phase 2
+
+    @Test
+    void testLoadAccountsFail() {
+        assertEquals(false, bank.loadAccounts("not/a/real.file"));
+    }
+
+    @Test
+    void testLoadAccounts() {
+        String accountsFilename = "data/testaccounts.csv";
+        boolean result = bank.loadAccounts(accountsFilename);
+        assertEquals(
+            true,
+            result
+        );
+        Account[] accounts = bank.getAccounts();
+        assertEquals(
+            2,
+            bank.getCount()
+        );
+
+        // check validity of stored rental item
+        Account account = accounts[0];
+        assertEquals(
+            "wz240833",
+            account.getID()
+        );
+        assertEquals(
+            "Anna Gomez",
+            account.getOwnerName()
+        );
+        assertEquals(
+            AccountType.SAVINGS,
+            account.getType()
+        );
+        assertEquals(
+            8111.00,
+            account.getBalance(),
+            1e-2
+        );
+
+        account = accounts[1];
+        assertEquals(
+            "hr108256",
+            account.getID()
+        );
+        assertEquals(
+            "Anna Gomez",
+            account.getOwnerName()
+        );
+        assertEquals(
+            AccountType.CHECKING,
+            account.getType()
+        );
+        assertEquals(
+            1715.18,
+            account.getBalance(),
+            1e-2
+        );
+    } // end: testLoadAccounts
+
+    @Test
+    void testWriteAccountsFail() {
+        assertEquals(false, bank.writeAccounts("not/a/real.file"));
+    }
+
+    @Test
+    void testWriteAccounts() {
+        // loading rental items already tested
+        String accountsFilename = "data/testaccounts.csv";
+        boolean result = bank.loadAccounts(accountsFilename);
+        assertEquals(true, result);
+        
+        // write
+        accountsFilename = "data/testaccounts-out.csv";
+        bank.writeAccounts(accountsFilename);
+
+        // reload and compare
+        Bank bankReload = new Bank();
+        bankReload.loadAccounts(accountsFilename);
+        
+        assertEquals(bank.getCount(), bankReload.getCount());
+
+        Account[] bankAccounts = bank.getAccounts();
+        Account[] bankReloadAccounts = bank.getAccounts();
+        assertEquals(bankAccounts.length, bankReloadAccounts.length);
+        for (int idx = 0; idx < bank.getCount(); idx++) {
+            assertEquals(
+                bankAccounts[idx],
+                bankReloadAccounts[idx],
+                String.format("Rental item %s should match.", idx)
+            );
+        }
     }
 
 } // end: class BankTest
