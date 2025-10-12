@@ -90,6 +90,7 @@ public class Bank {
                 Account account = Account.make(csvString);
                 add(account);
             }
+            scan.close();
         } catch(FileNotFoundException e) {
             e.printStackTrace();
             result = false;
