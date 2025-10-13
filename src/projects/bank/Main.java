@@ -15,20 +15,17 @@ public class Main {
             FileWriter writer = new FileWriter(new File(logName));
 
             Account acct = new Account(
-                "id1",
-                "Owner Name",
-                AccountType.SAVINGS,
-                1.0
-            );
-            
+                    "id1",
+                    "Owner Name",
+                    AccountType.SAVINGS,
+                    1.0);
+
             writer.write(
-                String.format(
-                    "Account setup: acct id=%s, owner=%s, balance=%f",
-                    acct.getID(),
-                    acct.getOwner(),
-                    acct.getCurrentBalance()
-                ) + System.lineSeparator()
-            );
+                    String.format(
+                            "Account setup: acct id=%s, owner=%s, balance=%f",
+                            acct.getID(),
+                            acct.getOwner(),
+                            acct.getCurrentBalance()) + System.lineSeparator());
 
             Bank bank = new Bank();
             int numAccounts0 = bank.getCount();
@@ -39,24 +36,22 @@ public class Main {
             int findAcct1 = bank.find(acct.getID());
 
             writer.write(
-                String.format(
-                    "Bank init: getCount=%d, find=%d",
-                    numAccounts0, 
-                    findAcct0
-                ) + System.lineSeparator()
-            );
+                    String.format(
+                            "Bank init: getCount=%d, find=%d",
+                            numAccounts0,
+                            findAcct0) + System.lineSeparator());
 
             writer.write(
-                String.format(
-                    "After add: result=%b, getCount=%d, find=%d",
-                    addResult,
-                    numAccounts1, 
-                    findAcct1
-                ) + System.lineSeparator()
-            );
+                    String.format(
+                            "After add: result=%b, getCount=%d, find=%d",
+                            addResult,
+                            numAccounts1,
+                            findAcct1) + System.lineSeparator());
 
             writer.close();
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 }

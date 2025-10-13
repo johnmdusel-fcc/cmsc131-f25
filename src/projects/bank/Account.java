@@ -29,13 +29,15 @@ public class Account {
             double startingBalance) {
         if (accountNumber == null) {
             throw new IllegalArgumentException(
-                    "Account ID cannot be empty.");
+                    "account ID cannot be empty.");
         }
         if (name == null) {
             throw new IllegalArgumentException(
-                    "Account owner's name cannot be empty.");
+                    "account owner's name cannot be empty.");
         }
-
+        if (type == null) {
+            throw new IllegalArgumentException("type cannot be null.");
+        }
         accountID = accountNumber;
         accountOwnerName = name;
         accountType = type;
@@ -56,5 +58,30 @@ public class Account {
 
     public AccountType getType() {
         return accountType;
+    }
+
+    public static Account make(String line) {
+        if (line == null) {
+            throw new IllegalArgumentException(
+                    "line must not be null.");
+        }
+        String[] token = line.split(",");
+        AccountType type = AccountType.valueOf(token[0].toUpperCase());
+        String id = token[1];
+        String owner = token[2];
+        double balance = Double.parseDouble(token[3]);
+        return new Account(id, owner, type, balance);
+    }
+
+    public static String toCSV(Account account) {
+        if (account == null) {
+            throw new IllegalArgumentException(
+                    "account must not be null.");
+        }
+        String token1 = String.valueOf(account.getType()).toLowerCase();
+        String token2 = account.getID();
+        String token3 = account.getOwner();
+        String token4 = String.valueOf(account.getCurrentBalance());
+        return String.join(",", token1, token2, token3, token4);
     }
 }

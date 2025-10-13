@@ -2,72 +2,72 @@ package projects.bank;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class AccountTest {
 
-    private Account account;
+    @Test
+    public void testDataValidation() {
+        Exception e = assertThrows(
+                IllegalArgumentException.class,
+                () -> {
+                    new Account(null, "name", AccountType.CHECKING, 0.0);
+                });
+        assertEquals("account ID cannot be empty.", e.getMessage());
 
-    @BeforeEach
-    public void setUp() {
-        account = new Account(
-                "12345",
-                "Alice Johnson",
-                AccountType.SAVINGS,
-                1000.0);
+        e = assertThrows(
+                IllegalArgumentException.class,
+                () -> {
+                    new Account("id", null, AccountType.CHECKING, 0.0);
+                });
+        assertEquals("account owner's name cannot be empty.", e.getMessage());
+
+        e = assertThrows(
+                IllegalArgumentException.class,
+                () -> {
+                    new Account("id", "Owner Name", null, 1.0);
+                });
+        assertEquals("type cannot be null.", e.getMessage());
     }
 
     @Test
-    void constructorThrowsForNullAccountId() {
+    public void makeDataValidation() {
+        Exception e = assertThrows(
+                IllegalArgumentException.class,
+                () -> {
+                    Account.make(null);
+                });
+        assertEquals("line must not be null.", e.getMessage());
+    }
+
+    @Test
+    public void makeTest() {
+        String line = ("savings,id,Owner name,0.00");
+        Account actualOutput = Account.make(line);
+        String expectedResultID = "id";
+        String expectedResultOwner = "Owner name";
+        AccountType expectedResultType = AccountType.SAVINGS;
+        Double expectedResultBalance = 0.00;
+        assertEquals(expectedResultID, actualOutput.getID());
+        assertEquals(expectedResultOwner, actualOutput.getOwner());
+        assertEquals(expectedResultType, actualOutput.getType());
+        assertEquals(expectedResultBalance, actualOutput.getCurrentBalance());
+    }
+
+    @Test
+    public void toCSVDataValidation() {
         Exception exception = assertThrows(
                 IllegalArgumentException.class,
                 () -> {
-                    new Account(
-                            null,
-                            "Alice Johnson",
-                            AccountType.SAVINGS,
-                            1000.0);
+                    Account.toCSV(null);
                 });
-        assertEquals("Account ID cannot be empty.",
-                exception.getMessage());
+        assertEquals("account must not be null.", exception.getMessage());
     }
 
     @Test
-    void constructorThrowsForNullAccountOwnerName() {
-        Exception exception = assertThrows(
-                IllegalArgumentException.class,
-                () -> {
-                    new Account(
-                            "12345",
-                            null,
-                            AccountType.SAVINGS,
-                            1000.0);
-                });
-        assertEquals("Account owner's name cannot be empty.",
-                exception.getMessage());
-    }
-
-    // TODO test data validation for account type
-
-    @Test
-    public void testGetAccountId() {
-        assertEquals("12345", account.getID());
-    }
-
-    @Test
-    public void testGetCurrentBalance() {
-        assertEquals(1000.0, account.getCurrentBalance());
-    }
-
-    @Test
-    public void testAccounOwnerName() {
-        assertEquals("Alice Johnson", account.getOwner());
-    }
-
-    @Test
-    public void testAccountType() {
-        assertEquals(AccountType.SAVINGS, account.getType());
+    public void toCSVTest() {
+        Account account = new Account("id", "Owner name", AccountType.CHECKING, 1.0);
+        String expectedResult = ("checking,id,Owner name,1.0");
+        assertEquals(expectedResult, Account.toCSV(account));
     }
 }
