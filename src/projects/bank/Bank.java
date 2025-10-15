@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class Bank {
@@ -125,6 +126,15 @@ public class Bank {
      * @return - Array of accounts for this bank.
      */
     public Account[] getAccounts() { return accounts; }
+
+    /**
+     * Method stub. TODO fill in javadoc
+     * @param filename
+     * @return
+     */
+    public boolean processTransactions(String filename) {
+        return false; // TODO fill in body
+    }
 
 }
 
