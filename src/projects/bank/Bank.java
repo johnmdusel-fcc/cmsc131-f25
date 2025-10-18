@@ -161,13 +161,14 @@ public class Bank {
         try {
             writer = new FileWriter(filename);
             for (int i = 0; i < accountCount; i++) {
-                String line = Account.toCSV(accounts[i]);
-                writer.write(line + "\n");
+                String line = Account.toCSV(accounts[i]); // TODO should be instance method
+                writer.write(line + "\n"); // "\n" is ok because your dev container runs linux
+                                           // consider using the os-agnostic System.lineSeparator()
             }
             writer.close();
             return true;
         } catch (IOException | IllegalArgumentException e) {
-            return false;
+            return false; // TODO print message of e to console
         }
     }
 }
