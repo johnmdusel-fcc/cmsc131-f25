@@ -73,6 +73,7 @@ public class Account {
         return new Account(id, owner, type, balance);
     }
 
+    // TODO should be an instance method not a static method
     public static String toCSV(Account account) {
         if (account == null) {
             throw new IllegalArgumentException("account must not be null.");
