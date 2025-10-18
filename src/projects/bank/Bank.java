@@ -131,13 +131,14 @@ public class Bank {
             scanner = new Scanner(fileToLoad);
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
-                if (line == null || line.isEmpty()) {
+                if (line == null || line.isEmpty()) { // TODO remove duplicate validation (see Account.java around line 65)
                     throw new IllegalArgumentException(
                             "line must not be null.");
                 }
                 Account account = Account.make(line);
-                Bank bank = new Bank();
-                bank.add(account);
+                // this method is meant to update this bank's accounts
+                Bank bank = new Bank(); // TODO remove
+                bank.add(account); // TODO remove
             }
             return true;
         } catch (FileNotFoundException e) {
