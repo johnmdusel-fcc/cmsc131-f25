@@ -60,23 +60,22 @@ public class Account {
         return accountType;
     }
 
+    // TODO javadoc
     public static Account make(String line) {
         if (line == null) {
-            throw new IllegalArgumentException(
-                    "line must not be null.");
+            throw new IllegalArgumentException("line must not be null.");
         }
-        String[] token = line.split(",");
-        AccountType type = AccountType.valueOf(token[0].toUpperCase());
-        String id = token[1];
-        String owner = token[2];
-        double balance = Double.parseDouble(token[3]);
+        String[] tokens = line.split(",");
+        AccountType type = AccountType.valueOf(tokens[0].toUpperCase());
+        String id = tokens[1];
+        String owner = tokens[2];
+        double balance = Double.parseDouble(tokens[3]);
         return new Account(id, owner, type, balance);
     }
 
     public static String toCSV(Account account) {
         if (account == null) {
-            throw new IllegalArgumentException(
-                    "account must not be null.");
+            throw new IllegalArgumentException("account must not be null.");
         }
         String token1 = String.valueOf(account.getType()).toLowerCase();
         String token2 = account.getID();
