@@ -7,6 +7,7 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args) {
         phase1();
+        phase2();
     }
 
     public static void phase1() {
@@ -53,5 +54,17 @@ public class Main {
             e.printStackTrace();
         }
 
+    }
+
+    public static void phase2() {
+        String accountsFilename = "data/accounts.csv";
+        Bank bank = new Bank();
+        boolean result = bank.loadAccounts(accountsFilename);
+
+        System.out.println("Result of loading account: " + result);
+        System.out.println("Number of accounts: " + bank.getCount());
+
+        String outputFilename = "data/phase2.csv";
+        bank.writeAccounts(outputFilename);
     }
 }
