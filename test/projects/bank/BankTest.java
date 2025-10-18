@@ -179,6 +179,8 @@ public class BankTest {
                 tempFile.delete();
         }
 
+        // TODO loadAccounts preserves data
+
         /*
          * This test confirms that the system will return false
          * if the file is non existent.
@@ -209,4 +211,7 @@ public class BankTest {
                 // Clean up
                 file.delete();
         }
+
+        // TODO writeAccounts failure mode
+        // TODO writeAccounts preserves data
 }
