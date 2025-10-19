@@ -72,7 +72,8 @@ public class Main {
         System.out.println("Number of accounts: " + bank.getCount());
 
         String outputFilename = "data/phase2.csv";
-        bank.writeAccounts(outputFilename);
+        result = bank.writeAccounts(outputFilename);
+        System.out.println("Result of writing account: " + result);
     }
 
     public static void phase3() {
