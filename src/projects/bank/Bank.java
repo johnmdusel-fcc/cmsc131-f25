@@ -128,12 +128,12 @@ public class Bank {
     public Account[] getAccounts() { return accounts; }
 
     /**
-     * Method stub. TODO fill in javadoc
-     * @param filename
-     * @return
+     * Process transactions that are stored in a CSV file.
+     * @param filename - Points to CSV file.
+     * @return - Number of transactions that were processed.
      */
-    public boolean processTransactions(String filename) {
-        return false; // TODO fill in body
+    public int processTransactions(String filename) {
+        throw new UnsupportedOperationException("Student must implement.");
     }
 
 }

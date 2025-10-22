@@ -204,5 +204,19 @@ public class BankTest {
         }
     }
 
+    // phase 3
+
+    @Test
+    void testProcessTransactionsFailure() {
+        // TODO
+        // pass bad filename and check number of transactions processed
+    }
+
+    @Test
+    void testProcesTransactionsSuccess() {
+        // TODO
+        // pass data/testtransactions.csv and check number of transactions processed
+    }
+
 } // end: class BankTest
 
