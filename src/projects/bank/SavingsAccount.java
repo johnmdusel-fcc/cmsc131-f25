@@ -9,7 +9,7 @@ public class SavingsAccount extends Account {
     @Override
     public AccountType getType() {
         // TODO
-        throw new UnsupportedOperationException("Not implemented yet.");
+        throw new UnsupportedOperationException("Student must implement.");
     }
 
 }
