@@ -11,11 +11,10 @@ public class AccountTest {
 
     @BeforeEach
     void setupAccount() {
-        account = new Account(
+        account = new SavingsAccount(
             "wz240833",
             "Anna Gomez",
-            8111.00,
-            AccountType.SAVINGS
+            8111.00
         );
     }
 
@@ -23,22 +22,16 @@ public class AccountTest {
     void testDataValidation() {
         Exception e = assertThrows(
             IllegalArgumentException.class,
-            () -> {new Account(null, "name", 0.0, AccountType.CHECKING);}
+            () -> {new CheckingAccount(null, "name", 0.0);}
         );
         assertEquals("id cannot be null", e.getMessage());
 
         e = assertThrows(
             IllegalArgumentException.class,
             () -> {
-                new Account("id", null, 0.0, AccountType.CHECKING);}
+                new CheckingAccount("id", null, 0.0);}
         );
         assertEquals("ownerName cannot be null", e.getMessage());
-
-        e = assertThrows(
-            IllegalArgumentException.class,
-            () -> {new Account("id", "Owner Name", 0.0, null);}
-        );
-        assertEquals("type cannot be null", e.getMessage());
     }
 
     @Test
