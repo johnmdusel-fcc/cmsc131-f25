@@ -75,4 +75,14 @@ abstract class Account {
      */
     public String toCSV() { return toString(); }
 
+    // TODO javadoc
+    public void credit(double amount) {
+        throw new UnsupportedOperationException("Student must implement.");
+    }
+
+    // TODO javadoc
+    public void debit(double amount) {
+        throw new UnsupportedOperationException("Student must implement.");
+    }
+
 }
