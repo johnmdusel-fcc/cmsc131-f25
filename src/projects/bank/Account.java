@@ -1,11 +1,11 @@
 package projects.bank;
 
-public class Account {
+public abstract class Account {
 
     private final String accountID;
     private final String accountOwnerName;
-    private AccountType accountType;
     private double currentBalance;
+    protected final double dailyLimit = 2000.00;
 
     /**
      * Each account will hold the following values:
@@ -16,16 +16,12 @@ public class Account {
      * @param name            - Name of the account owner, could be repeated across
      *                        accounts, definitive value
      * 
-     * @param type            - Type of account (Checking, Savings), definitive
-     *                        value
-     * 
      * @param startingBalance - Current balance of the account, could be negative ,
      *                        variable value
      * 
      */
     public Account(String accountNumber,
             String name,
-            AccountType type,
             double startingBalance) {
         if (accountNumber == null) {
             throw new IllegalArgumentException(
@@ -35,12 +31,9 @@ public class Account {
             throw new IllegalArgumentException(
                     "account owner's name cannot be empty.");
         }
-        if (type == null) {
-            throw new IllegalArgumentException("type cannot be null.");
-        }
+
         accountID = accountNumber;
         accountOwnerName = name;
-        accountType = type;
         currentBalance = startingBalance;
     }
 
@@ -56,32 +49,94 @@ public class Account {
         return currentBalance;
     }
 
-    public AccountType getType() {
-        return accountType;
-    }
+    public abstract AccountType getType();
 
-    // TODO javadoc
+    /*
+     * Parses a line from a CSV file and creates the appropriate Account object.
+     *
+     * @param line - A line from a CSV file representing an account.
+     *
+     * @return An Account object (either CheckingAccount or SavingsAccount).
+     *
+     * @throws IllegalArgumentException if the line is null or has an unknown
+     * account type.
+     */
     public static Account make(String line) {
         if (line == null) {
-            throw new IllegalArgumentException("line must not be null.");
+            throw new IllegalArgumentException(
+                    "line must not be null.");
         }
-        String[] tokens = line.split(",");
-        AccountType type = AccountType.valueOf(tokens[0].toUpperCase());
-        String id = tokens[1];
-        String owner = tokens[2];
-        double balance = Double.parseDouble(tokens[3]);
-        return new Account(id, owner, type, balance);
+        String[] token = line.split(",");
+        String type = token[0];
+        String id = token[1];
+        String owner = token[2];
+        double balance = Double.parseDouble(token[3]);
+        if (type.equals("checking")) {
+            Account chacct = new CheckingAccount(id, owner, balance);
+            return chacct;
+        } else if (type.equals("savings")) {
+            Account svacct = new SavingsAccount(id, owner, balance);
+            return svacct;
+        } else {
+            throw new IllegalArgumentException(
+                    "Unknown account type: " + token[0]);
+        }
     }
 
-    // TODO should be an instance method not a static method
-    public static String toCSV(Account account) {
-        if (account == null) {
-            throw new IllegalArgumentException("account must not be null.");
+    @Override
+    public String toString() {
+        return String.format(
+                "%s,%s,%s,%.2f", // format double to 2 decimal places
+                getType().name().toLowerCase(),
+                getID(),
+                getOwner(),
+                getCurrentBalance());
+    }
+
+    /**
+     * CSV line holding this account's data.
+     * 
+     * @return Eg, "savings,wz240833,Anna Gomez,8111.00"
+     */
+    public String toCSV() {
+        return toString();
+    }
+
+    /*
+     * Credits (deposits) the given amount to the account.
+     *
+     * @param amount - The amount to deposit (must be positive).
+     *
+     * @throws IllegalArgumentException if the amount is negative.
+     */
+    public void credit(double amount) {
+        if (amount < 0) {
+            throw new IllegalArgumentException(
+                    "amount must be positive.");
         }
-        String token1 = String.valueOf(account.getType()).toLowerCase();
-        String token2 = account.getID();
-        String token3 = account.getOwner();
-        String token4 = String.valueOf(account.getCurrentBalance());
-        return String.join(",", token1, token2, token3, token4);
+        currentBalance += amount;
+    }
+
+    /*
+     * Debits (withdraws) the given amount from the account.
+     * 
+     * @param amount - The amount to withdraw (must be positive and within daily
+     * limit).
+     * 
+     * @throws IllegalArgumentException if the amount is negative.
+     * 
+     */
+    public void debit(double amount) {
+        if (amount < 0) {
+            throw new IllegalArgumentException(
+                    "amount must be positive.");
+        } else {
+            if (amount < currentBalance) {
+                // Account can't debit more than the current balance
+                // on the account.
+                currentBalance -= amount;
+            }
+
+        }
     }
 }

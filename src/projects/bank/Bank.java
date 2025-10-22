@@ -11,11 +11,18 @@ public class Bank {
     private static int accountCount;
     private static Scanner scanner;
     private static FileWriter writer;
+    private static Transaction[] transactions;
+    private static int transactionsCount;
+    private double dailyLimit = 1000.00;
+    private static Account[] activeAccounts;
 
     // This bank will hold 392 accounts for this project.
     public Bank() {
         accounts = new Account[392];
         accountCount = 0;
+        transactions = new Transaction[1000];
+        transactionsCount = 0;
+
     }
 
     /**
@@ -90,30 +97,6 @@ public class Bank {
     }
 
     /**
-     * Get all accounts for a given account owner name.
-     * 
-     * @param accountOwnerName the name of the account owner.
-     * 
-     * @return an array of accounts owned by the specified account owner name.
-     */
-    public Account[] getAccounts(String OwnerName) {
-        Account[] accountsBySameOwner = new Account[accountCount];
-        for (int i = 0; i < accounts.length; i++) {
-            if (accounts[i] != null && accounts[i].getOwner().equals(OwnerName)) {
-                // style: it's clearer to increment j on a separate line
-                for (int j = 0; j < accountCount; j++) {
-                    if (accountsBySameOwner[j] == null) {
-                        accountsBySameOwner[j] = accounts[i];
-                        j++;
-                        break; // Exit inner loop after adding the account
-                    }
-                }
-            }
-        }
-        return accountsBySameOwner;
-    } // End of for loop
-
-    /**
      * Read the file containing the bank accounts and fill the datatbase
      * 
      * @param file the file containing the bank accounts.
@@ -123,7 +106,7 @@ public class Bank {
      * @throws Exception if there was an error reading the file.
      * 
      */
-    public static boolean loadAccounts(String fileName) {
+    public boolean loadAccounts(String fileName) {
         // Load accounts one by one into the bank
 
         File fileToLoad = new File(fileName);
@@ -131,14 +114,13 @@ public class Bank {
             scanner = new Scanner(fileToLoad);
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
-                if (line == null || line.isEmpty()) { // TODO remove duplicate validation (see Account.java around line 65)
+                if (line == null || line.isEmpty()) {
                     throw new IllegalArgumentException(
                             "line must not be null.");
+                } else {
+                    Account account = Account.make(line);
+                    add(account);
                 }
-                Account account = Account.make(line);
-                // this method is meant to update this bank's accounts
-                Bank bank = new Bank(); // TODO remove
-                bank.add(account); // TODO remove
             }
             return true;
         } catch (FileNotFoundException e) {
@@ -157,18 +139,127 @@ public class Bank {
      * @throws Exception if there was an error writing to the file.
      * 
      */
-    public static boolean writeAccounts(String filename) {
+    public boolean writeAccounts(String filename) {
         try {
             writer = new FileWriter(filename);
             for (int i = 0; i < accountCount; i++) {
-                String line = Account.toCSV(accounts[i]); // TODO should be instance method
-                writer.write(line + "\n"); // "\n" is ok because your dev container runs linux
-                                           // consider using the os-agnostic System.lineSeparator()
+                Account account = accounts[i];
+                String line = account.toCSV();
+                writer.write(line + "\n");
             }
             writer.close();
             return true;
         } catch (IOException | IllegalArgumentException e) {
-            return false; // TODO print message of e to console
+            return false;
         }
     }
+
+    /**
+     * Get all active accounts in the bank.
+     * 
+     * * @return an array of all accounts in the bank.
+     */
+    public Account[] getAccounts() {
+        activeAccounts = new Account[accountCount];
+        int j = 0;
+        for (int i = 0; i < accountCount; i++) {
+            if (accounts[i] != null) {
+                activeAccounts[j] = accounts[i];
+                j++;
+            }
+
+        }
+        return activeAccounts;
+    }
+
+    /*
+     * Process a file containing transactions and apply them to the appropriate
+     * accounts.
+     * 
+     * @param transactionFile - The file containing the transactions.
+     * 
+     * @return true if all transactions were processed successfully, false
+     * otherwise.
+     * 
+     * @throws FileNotFoundException if the transaction file is not found.
+     * 
+     * 
+     */
+    public Transaction[] loadTransactions(String transactionFile) {
+        try (Scanner scanner = new Scanner(new File(transactionFile))) {
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                if (line == null || line.isEmpty()) {
+
+                    Transaction trs = Transaction.make(line);
+                    if (trs != null) {
+                        // ensure capacity
+                        if (transactionsCount >= transactions.length) {
+                            Transaction[] newTransactions = new Transaction[transactions.length * 2];
+                            System.arraycopy(transactions, 0, newTransactions, 0, transactions.length);
+                            transactions = newTransactions;
+                        }
+                        transactions[transactionsCount++] = trs;
+                    } else {
+                        System.out.println("line cannot be null.");
+                    }
+                }
+            }
+            scanner.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return transactions;
+    }
+
+    /*
+     * Make process transactions return an int
+     * so it can count how many transactiosn were processed
+     * 
+     * Method processes all transactions and changes accounts
+     * balances in the bank.
+     * 
+     * @param Transaction [] transations - array of all the transactions
+     * to be processed.
+     * 
+     * @return boolean true once all trnasactions are processed.
+     *
+     */
+    public int processTransactions(Transaction[] transactions) {
+        int transactionsCount = 0;
+        for (int i = 0; i < transactionsCount; i++) {
+            Transaction trs = transactions[i];
+            if (trs != null) {
+                int acctIndex = find(trs.getAccountNumber());
+                if (acctIndex != -1) {
+                    Account acct = accounts[acctIndex];
+                    // validate transaction then execute it
+                    if (trs.getType() == TransactionType.DEPOSIT) {
+                        trs = new Deposit(trs.getAccountNumber(), trs.getAmount());
+                        trs.execute(acct);
+                        transactionsCount++;
+                    } else if (trs.getType() == TransactionType.WITHDRAWAL) {
+                        trs = new Withdrawal(trs.getAccountNumber(), trs.getAmount());
+                        if (!(trs.getAmount() <= dailyLimit || trs.getAmount() <= acct.getCurrentBalance())) {
+                            trs.execute(acct);
+                            transactionsCount++;
+                        } else {
+                            System.out.println("We apologize as we are unable to disburse that amount.");
+                        }
+                    }
+                } else {
+                    System.out.println("Account not found for this transaction.");
+                }
+            }
+        }
+        return transactionsCount;
+    }
+
 }
+
+// Add a validate method (if validate, then...)
+// which will live in the transaction level as an abstract
+// concrete definition in each
+// public boolean validate
+// will return true in deposit
+// will be fully implemented in Withdrawal
