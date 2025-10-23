@@ -20,16 +20,18 @@ public abstract class Account {
      *                        variable value
      * 
      */
-    public Account(String accountNumber,
-            String name,
-            double startingBalance) {
+    public Account(
+        String accountNumber,
+        String name,
+        double startingBalance
+    ) {
         if (accountNumber == null) {
-            throw new IllegalArgumentException(
-                    "account ID cannot be empty.");
+            throw new IllegalArgumentException("account ID cannot be empty.");
         }
         if (name == null) {
             throw new IllegalArgumentException(
-                    "account owner's name cannot be empty.");
+                "account owner's name cannot be empty."
+            );
         }
 
         accountID = accountNumber;
@@ -63,21 +65,20 @@ public abstract class Account {
      */
     public static Account make(String line) {
         if (line == null) {
-            throw new IllegalArgumentException(
-                    "line must not be null.");
+            throw new IllegalArgumentException("line must not be null.");
         }
         String[] token = line.split(",");
-        String type = token[0];
+        String type = token[0]; // TODO use an AccountType here
         String id = token[1];
         String owner = token[2];
         double balance = Double.parseDouble(token[3]);
-        if (type.equals("checking")) {
+        if (type.equals("checking")) { // TODO use an AccountType here
             Account chacct = new CheckingAccount(id, owner, balance);
             return chacct;
-        } else if (type.equals("savings")) {
+        } else if (type.equals("savings")) { // // TODO use an AccountType here and make it an else block
             Account svacct = new SavingsAccount(id, owner, balance);
             return svacct;
-        } else {
+        } else { // TODO remove
             throw new IllegalArgumentException(
                     "Unknown account type: " + token[0]);
         }
@@ -111,8 +112,7 @@ public abstract class Account {
      */
     public void credit(double amount) {
         if (amount < 0) {
-            throw new IllegalArgumentException(
-                    "amount must be positive.");
+            throw new IllegalArgumentException("amount must be positive.");
         }
         currentBalance += amount;
     }
@@ -128,10 +128,9 @@ public abstract class Account {
      */
     public void debit(double amount) {
         if (amount < 0) {
-            throw new IllegalArgumentException(
-                    "amount must be positive.");
+            throw new IllegalArgumentException("amount must be positive.");
         } else {
-            if (amount < currentBalance) {
+            if (amount < currentBalance) { // TODO this logic should be in Withdrawal
                 // Account can't debit more than the current balance
                 // on the account.
                 currentBalance -= amount;
