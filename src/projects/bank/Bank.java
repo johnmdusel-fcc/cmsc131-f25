@@ -22,7 +22,6 @@ public class Bank {
         accountCount = 0;
         transactions = new Transaction[1000];
         transactionsCount = 0;
-
     }
 
     /**
@@ -115,18 +114,18 @@ public class Bank {
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 if (line == null || line.isEmpty()) {
-                    throw new IllegalArgumentException(
-                            "line must not be null.");
+                    throw new IllegalArgumentException("line must not be null.");
                 } else {
                     Account account = Account.make(line);
                     add(account);
                 }
             }
+            scanner.close();
             return true;
         } catch (FileNotFoundException e) {
             System.out.println("file not found. " + e.getMessage());
+            return false;
         }
-        return false;
     }
 
     /**
@@ -167,7 +166,6 @@ public class Bank {
                 activeAccounts[j] = accounts[i];
                 j++;
             }
-
         }
         return activeAccounts;
     }
@@ -182,21 +180,25 @@ public class Bank {
      * otherwise.
      * 
      * @throws FileNotFoundException if the transaction file is not found.
-     * 
-     * 
      */
     public Transaction[] loadTransactions(String transactionFile) {
-        try (Scanner scanner = new Scanner(new File(transactionFile))) {
+        Scanner scanner;
+        try {
+            scanner = new Scanner(new File(transactionFile));
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 if (line == null || line.isEmpty()) {
-
                     Transaction trs = Transaction.make(line);
-                    if (trs != null) {
+                    if (trs != null) { // TODO remove this conditional, Transaction.make doesn't return null
                         // ensure capacity
                         if (transactionsCount >= transactions.length) {
-                            Transaction[] newTransactions = new Transaction[transactions.length * 2];
-                            System.arraycopy(transactions, 0, newTransactions, 0, transactions.length);
+                            Transaction[] newTransactions = new Transaction[
+                                transactions.length * 2
+                            ];
+                            System.arraycopy(
+                                transactions, 0, 
+                                newTransactions, 0, transactions.length
+                            );
                             transactions = newTransactions;
                         }
                         transactions[transactionsCount++] = trs;
@@ -209,7 +211,18 @@ public class Bank {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        return transactions;
+        return transactions; 
+        // TODO this method could be problematic.
+        // The returned value could contain nulls, either because 
+        // the while loop left some elements of transactions undeclared
+        // or your code entered the catch block.
+        // So, any code that uses this method has to either guard against a 
+        // transaction being null, or rely on the value of transactionsCount.
+        // You're doing the latter in processTransactions.
+        // If you want to keep this method around, consider
+        // trimming `transactions` to remove nulls before returning. 
+        // Then you can get rid of transactionsCount and just iterate through 
+        // `transactions`.
     }
 
     /*
@@ -227,13 +240,22 @@ public class Bank {
      */
     public int processTransactions(Transaction[] transactions) {
         int transactionsCount = 0;
-        for (int i = 0; i < transactionsCount; i++) {
+        for (int i = 0; i < transactionsCount; i++) { // TODO see comments starting line 215
             Transaction trs = transactions[i];
-            if (trs != null) {
+            if (trs != null) { // TODO remove this conditional 
+                               // Transaction.make returns non-null
+                               // and i < transactionsCount prevents accidentally 
+                            //    reading null array element
                 int acctIndex = find(trs.getAccountNumber());
                 if (acctIndex != -1) {
                     Account acct = accounts[acctIndex];
-                    // validate transaction then execute it
+                    // TODO use polymorphism to simplify this logic
+                    //     avoid creating a new transaction
+                    //     first validate the transaction
+                    //         how to validate depends on transaction type
+                    //         => definition should be abstract for Transaction
+                    //            and implemented in in Deposit/Withdrawal
+                    //     then just call trs.execute
                     if (trs.getType() == TransactionType.DEPOSIT) {
                         trs = new Deposit(trs.getAccountNumber(), trs.getAmount());
                         trs.execute(acct);
