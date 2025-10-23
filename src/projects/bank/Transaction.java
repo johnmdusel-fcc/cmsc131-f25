@@ -4,7 +4,7 @@ public abstract class Transaction {
     private double amount;
     private String accountID;
 
-    abstract boolean execute(Account account);
+    abstract boolean execute(Account account); // okay to return void, up to you
 
     protected Transaction(String accountNumber, double transactionAmt) {
         if (accountNumber == null) {
@@ -12,7 +12,8 @@ public abstract class Transaction {
         }
         if (transactionAmt <= 0) {
             throw new IllegalArgumentException(
-                    "transaction amount must be positive");
+                "transaction amount must be positive"
+            );
         }
 
         amount = transactionAmt;
@@ -48,22 +49,20 @@ public abstract class Transaction {
      */
     public static Transaction make(String line) {
         if (line == null) {
-            throw new IllegalArgumentException(
-                    "line must not be null.");
+            throw new IllegalArgumentException("line must not be null.");
         }
         String[] token = line.split(",");
         String id = token[1];
         Double amount = Double.parseDouble(token[2]);
-        if (token[0].equals("withdrawal")) {
+        if (token[0].equals("withdrawal")) { // TODO use TransactionType
             Transaction wdraw = new Withdrawal(id, amount);
             return wdraw;
         }
-        if (token[0].equals("deposit")) {
+        if (token[0].equals("deposit")) { // TODO use TransactionType and make this an else block
             Transaction dep = new Deposit(id, amount);
             return dep;
-        } else {
-            throw new IllegalArgumentException(
-                    "Invalid transaction type.");
+        } else { // TODO remove
+            throw new IllegalArgumentException("Invalid transaction type.");
         }
     }
 

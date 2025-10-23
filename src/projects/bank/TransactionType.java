@@ -1,7 +1,9 @@
 package projects.bank;
 
+/**
+ * Transaction types in this bank.
+ */
 public enum TransactionType {
-    // Transaction types in this bank.
     DEPOSIT,
     WITHDRAWAL
 }
