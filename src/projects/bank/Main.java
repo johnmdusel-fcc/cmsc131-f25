@@ -79,7 +79,7 @@ public class Main {
         Bank bank = new Bank();
         bank.loadAccounts("data/accounts.csv"); // ignore output
         int step2 = bank.processTransactions("data/transactions.csv");
-        bank.writeAccounts("data/accounts.csv");
+        bank.writeAccounts("data/accounts-Phase3Out.csv");
         System.out.println("Number of transactions processed: " + step2); // ignore output
     }
 
