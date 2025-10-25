@@ -17,11 +17,10 @@ public class Main {
         try {
             FileWriter writer = new FileWriter(new File(logName));
 
-            Account acct = new Account(
+            Account acct = new SavingsAccount(
                 "id1",
                 "Owner Name",
-                1.0,
-                AccountType.SAVINGS
+                1.0
             );
             
             writer.write(

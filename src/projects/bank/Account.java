@@ -75,14 +75,20 @@ abstract class Account {
      */
     public String toCSV() { return toString(); }
 
-    // TODO javadoc
+    /**
+     * Add amount from this account's balance.
+     * @param amount - Amount to be added.
+     */
     public void credit(double amount) {
-        throw new UnsupportedOperationException("Student must implement.");
+        balance = balance + amount;
     }
 
-    // TODO javadoc
+    /**
+     * Subtract amount from this account's balance.
+     * @param amount - Amount to be subtracted.
+     */
     public void debit(double amount) {
-        throw new UnsupportedOperationException("Student must implement.");
+        balance = balance - amount;
     }
 
 }

@@ -78,5 +78,29 @@ public class AccountTest {
         );
     }
 
+    @Test
+    void testCredit() {
+        double initialBalance = account.getBalance();
+        double amount = 6.78;
+        account.credit(amount);
+        assertEquals(
+            initialBalance + amount,
+            account.getBalance(),
+            0.01
+        );
+    }
+
+    @Test
+    void testDebit() {
+        double initialBalance = account.getBalance();
+        double amount = 6.78;
+        account.debit(amount);
+        assertEquals(
+            initialBalance - amount,
+            account.getBalance(),
+            0.01
+        );
+    }
+
 }
 

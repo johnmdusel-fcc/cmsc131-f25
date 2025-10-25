@@ -13,11 +13,10 @@ public class BankTest {
     @BeforeEach
     void setup() {
         bank = new Bank();
-        acct = new Account(
+        acct = new CheckingAccount(
             "id0",
             "Owner Name",
-            1.0,
-            AccountType.SAVINGS
+            1.0
         );
     }
 
@@ -66,11 +65,10 @@ public class BankTest {
         for (int idx = 0; idx <= 100; idx++) {
             Integer id = idx;
             bank.add(
-                new Account(
+                new SavingsAccount(
                     id.toString(),
                     "Owner Name",
-                    1.0,
-                    AccountType.CHECKING
+                    1.0
                 )
             );
         }
