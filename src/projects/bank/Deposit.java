@@ -3,20 +3,17 @@ package projects.bank;
 public class Deposit extends Transaction {
 
     public Deposit(String accountID, double amount) {
-        // TODO
-        throw new UnsupportedOperationException("Student must implement.");
+        super(accountID, amount);
     }
 
     @Override
-    public void execute(Account accont) {
-        // TODO
-        throw new UnsupportedOperationException("Student must implement.");
+    public void execute(Account account) {
+        account.credit(getAmount()); // tested by testExecuteDeposit
     }
 
     @Override 
     public boolean validate(Account account) {
-        // TODO
-        throw new UnsupportedOperationException("Student must implement.");
+        return true; // tested by testValidateDeposit
     }
 
 }
