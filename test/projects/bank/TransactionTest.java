@@ -110,4 +110,10 @@ public class TransactionTest {
         );
     }
 
+    @Test
+    void testToCsv() {
+        assertEquals("id,2.51+", defaultDeposit.toCSV());
+        assertEquals("id,1.75-", defaultWithdrawal.toCSV());
+    }
+
 }

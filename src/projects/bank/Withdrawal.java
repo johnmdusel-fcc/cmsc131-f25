@@ -19,4 +19,9 @@ public class Withdrawal extends Transaction {
         // tested by testValidateWithdrawal
     }
 
+    @Override
+    public String toCSV() {
+        return String.format("%s,%.2f-", accountID, amount);
+    }
+
 }

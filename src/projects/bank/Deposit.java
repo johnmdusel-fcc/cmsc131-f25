@@ -18,4 +18,9 @@ public class Deposit extends Transaction {
         return true; // tested by testValidateDeposit
     }
 
+    @Override
+    public String toCSV() {
+        return String.format("%s,%.2f+", accountID, amount);
+    }
+
 }

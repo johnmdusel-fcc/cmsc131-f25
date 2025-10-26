@@ -2,15 +2,16 @@ package projects.bank;
 
 abstract class Transaction {
 
-    private final String accountID;
+    protected final String accountID;
     public String getAccountID() { return accountID; }
     
-    private final double amount;
+    protected final double amount;
     public double getAmount() { return amount; }
 
     // abstract methods, to be overridden by subclasses
     
     abstract void execute(Account account);
+    abstract String toCSV();
     
     /**
      * Determines whether this transaction can execute on the target account.
