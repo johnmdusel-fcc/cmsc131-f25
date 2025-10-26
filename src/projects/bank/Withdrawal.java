@@ -8,7 +8,9 @@ public class Withdrawal extends Transaction {
 
     @Override
     public void execute(Account account) {
-        account.debit(getAmount()); // tested by testExecuteWithdrawal
+        if (validate(account)) {
+            account.debit(getAmount()); // tested by testExecuteWithdrawal
+        }
     }
 
     @Override 

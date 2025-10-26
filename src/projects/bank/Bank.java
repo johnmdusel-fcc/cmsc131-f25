@@ -140,10 +140,8 @@ public class Bank {
                 Transaction tx = Transaction.make(scan.nextLine());
                 try {
                     Account acct = accounts[find(tx.getAccountID())];
-                    // bank controls execution
-                    if (tx.validate(acct)) {
-                        tx.execute(acct);
-                    }
+                    // transaction controls execution
+                    tx.execute(acct);
                 } catch(ArrayIndexOutOfBoundsException e) {
                     System.out.println(
                         "Account " + tx.getAccountID() + " not found."

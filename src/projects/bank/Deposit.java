@@ -8,7 +8,9 @@ public class Deposit extends Transaction {
 
     @Override
     public void execute(Account account) {
-        account.credit(getAmount()); // tested by testExecuteDeposit
+        if (validate(account)) {
+            account.credit(getAmount()); // tested by testExecuteDeposit
+        }
     }
 
     @Override 
