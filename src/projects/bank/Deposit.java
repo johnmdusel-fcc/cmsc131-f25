@@ -7,20 +7,21 @@ public class Deposit extends Transaction {
     }
 
     @Override
-    public void execute(Account account) {
-        if (validate(account)) {
-            account.credit(getAmount()); // tested by testExecuteDeposit
-        }
+    public void execute(Account account, Audit audit) {
+        account.credit(getAmount()); // tested by testExecuteDeposit
+        audit.recordValid(this, account);
     }
 
     @Override 
-    public boolean validate(Account account) {
+    public boolean validate(Account account, Audit audit) {
         return true; // tested by testValidateDeposit
     }
 
-    @Override
-    public String toCSV() {
-        return String.format("%s,%.2f+", accountID, amount);
+    @Override // overrides Object definition, not Transaction definition
+    public String toString() {
+        return String.format(
+            "deposit $%.2f into account %s", amount, accountID
+        );
     }
 
 }

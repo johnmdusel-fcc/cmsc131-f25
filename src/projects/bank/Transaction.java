@@ -10,15 +10,15 @@ abstract class Transaction {
 
     // abstract methods, to be overridden by subclasses
     
-    abstract void execute(Account account);
-    abstract String toCSV();
+    abstract void execute(Account account, Audit audit);
     
     /**
      * Determines whether this transaction can execute on the target account.
      * @param account - Target account.
+     * @param audit - Audit object, will record any errors.
      * @return true if and only if this transaction can execute.
      */
-    abstract boolean validate(Account account);
+    abstract boolean validate(Account account, Audit audit);
 
     // concrete methods
 

@@ -2,6 +2,8 @@ package projects.bank;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.IOException;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -9,12 +11,17 @@ public class TransactionTest {
 
     private Account ckgAccount;
     private Transaction defaultDeposit, defaultWithdrawal;
+    private Audit audit;
 
     @BeforeEach
     void setUp() {
         ckgAccount = new CheckingAccount("id", "owner", 10.0);
         defaultDeposit = new Deposit("id", 2.51);
         defaultWithdrawal = new Withdrawal("id", 1.75);
+        String fileName = "test/audittest.log";
+        try {
+            audit = new Audit(fileName);
+        } catch (IOException e) {e.printStackTrace();}
     }
 
     @Test
@@ -77,22 +84,22 @@ public class TransactionTest {
     @Test
     void testValidateDeposit() {
         Transaction tx = new Deposit(ckgAccount.getID(), 11.0);
-        assertEquals(true, tx.validate(ckgAccount));
+        assertEquals(true, tx.validate(ckgAccount, audit));
     }
 
     @Test
     void testValidateWithdrawal() {
         Transaction tx1 = new Withdrawal(ckgAccount.getID(), 11.0);
-        assertEquals(false, tx1.validate(ckgAccount));
+        assertEquals(false, tx1.validate(ckgAccount, audit));
         Transaction tx2 = new Withdrawal(ckgAccount.getID(), 9.90);
-        assertEquals(true, tx2.validate(ckgAccount));
+        assertEquals(true, tx2.validate(ckgAccount, audit));
     }
 
     @Test
     void testExecuteDeposit() {
         // test that depositing increases balance as expected
         double initBalance = ckgAccount.getBalance();
-        defaultDeposit.execute(ckgAccount);
+        defaultDeposit.execute(ckgAccount, audit);
         assertEquals(
             initBalance + defaultDeposit.getAmount(),
             ckgAccount.getBalance()
@@ -103,17 +110,11 @@ public class TransactionTest {
     void testExecuteWithdrawal() {
         // test that withdrawing decreases balance as expected
         double initBalance = ckgAccount.getBalance();
-        defaultWithdrawal.execute(ckgAccount);
+        defaultWithdrawal.execute(ckgAccount, audit);
         assertEquals(
             initBalance - defaultWithdrawal.getAmount(),
             ckgAccount.getBalance()
         );
-    }
-
-    @Test
-    void testToCsv() {
-        assertEquals("id,2.51+", defaultDeposit.toCSV());
-        assertEquals("id,1.75-", defaultWithdrawal.toCSV());
     }
 
 }
