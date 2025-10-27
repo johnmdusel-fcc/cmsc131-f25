@@ -2,6 +2,8 @@ package projects.bank;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.IOException;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -206,19 +208,15 @@ public class BankTest {
 
     @Test
     void testProcessTransactionsFailure() {
-        assertEquals(
-            0,
-            bank.processTransactions("not/a/real.csv") // or null
-        );
+        int nTx = bank.processTransactions("not/a/real.csv");
+        assertEquals(0, nTx);
     }
 
     @Test
     void testProcesTransactionsSuccess() {
         // testtransactions.csv has 4 lines
-        assertEquals(
-            4,
-            bank.processTransactions("data/testtransactions.csv")
-        );
+        int nTx = bank.processTransactions("data/testtransactions.csv");
+        assertEquals(4, nTx);
     }
 
 } // end: class BankTest
