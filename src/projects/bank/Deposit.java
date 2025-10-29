@@ -11,14 +11,12 @@ public class Deposit extends Transaction {
     }
 
     @Override
-    public boolean execute(Account account) {
-        // TODO remove this logic
-        //     amount > 0 already verified in constructor (DRY)
-        //     account != null guaranteed by Accoubt.make and Account constructor
-        if (account != null && getAmount() > 0) {
-            account.credit(getAmount());
-            return true;
-        }
-        return false;
+    public boolean validate(Account account) {
+        return true;
+    }
+
+    @Override
+    public void execute(Account account) {
+        account.credit(getAmount());
     }
 }

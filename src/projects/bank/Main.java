@@ -66,7 +66,7 @@ public class Main {
         System.out.println("Result of loading account: " + result);
         System.out.println("Number of accounts: " + bank.getCount());
 
-        String outputFilename = "data/phase2.csv";
+        String outputFilename = "data/accounts-out.csv";
         bank.writeAccounts(outputFilename);
     }
 
@@ -75,9 +75,9 @@ public class Main {
         bank.loadAccounts("data/accounts.csv"); // ignore output
         Transaction[] step1 = bank.loadTransactions("data/transactions.csv");
         int step2 = bank.processTransactions(step1);
-        boolean step3 = bank.writeAccounts("data/accounts.csv");
-        System.out.println("Transactions process: " + step2);
-        System.out.println("Accounts write: " + step3);
+        boolean step3 = bank.writeAccounts("data/accounts-out.csv");
+        System.out.println("Transactions processed: " + step2);
+        System.out.println("Result of Accounts write: " + step3);
     }
 
 }

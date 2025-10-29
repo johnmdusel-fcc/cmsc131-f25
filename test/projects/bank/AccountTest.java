@@ -1,73 +1,150 @@
 package projects.bank;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class AccountTest {
 
-    @Test
-    public void testDataValidation() {
-        Exception e = assertThrows(
-                IllegalArgumentException.class,
-                () -> {
-                    new Account(null, "name", AccountType.CHECKING, 0.0);
-                });
-        assertEquals("account ID cannot be empty.", e.getMessage());
+        private Account svaccount;
+        private double amount;
 
-        e = assertThrows(
-                IllegalArgumentException.class,
-                () -> {
-                    new Account("id", null, AccountType.CHECKING, 0.0);
-                });
-        assertEquals("account owner's name cannot be empty.", e.getMessage());
+        /*
+         * Setting up our account to be used or not
+         * with each test.
+         * Amount is set for credit() and debit() methods
+         */
+        @BeforeEach
+        void setupAccount() {
+                svaccount = new SavingsAccount(
+                                "wz240833",
+                                "Anna Gomez",
+                                8111.00);
+                amount = 100.00;
+        }
 
-        e = assertThrows(
-                IllegalArgumentException.class,
-                () -> {
-                    new Account("id", "Owner Name", null, 1.0);
-                });
-        assertEquals("type cannot be null.", e.getMessage());
-    }
+        /*
+         * Test confirms exceptions are thrown with invalid account paprameters.
+         */
+        @Test
+        void testDataValidation() {
+                Exception e = assertThrows(
+                                IllegalArgumentException.class,
+                                () -> {
+                                        new CheckingAccount(null, "name", 0.0);
+                                });
+                assertEquals("account ID cannot be empty.", e.getMessage());
 
-    @Test
-    public void makeDataValidation() {
-        Exception e = assertThrows(
-                IllegalArgumentException.class,
-                () -> {
-                    Account.make(null);
-                });
-        assertEquals("line must not be null.", e.getMessage());
-    }
+                e = assertThrows(
+                                IllegalArgumentException.class,
+                                () -> {
+                                        new CheckingAccount("id", null, 0.0);
+                                });
+                assertEquals("account owner's name cannot be empty.", e.getMessage());
+        }
 
-    @Test
-    public void makeTest() {
-        String line = ("savings,id,Owner name,0.00");
-        Account actualOutput = Account.make(line);
-        String expectedResultID = "id";
-        String expectedResultOwner = "Owner name";
-        AccountType expectedResultType = AccountType.SAVINGS;
-        Double expectedResultBalance = 0.00;
-        assertEquals(expectedResultID, actualOutput.getID());
-        assertEquals(expectedResultOwner, actualOutput.getOwner());
-        assertEquals(expectedResultType, actualOutput.getType());
-        assertEquals(expectedResultBalance, actualOutput.getCurrentBalance());
-    }
+        /*
+         * Test confirms that make() method throws an exception
+         * when a null argument string is passed.
+         */
+        @Test
+        void testMakeThrowsOnNullInput() {
+                Exception exception = assertThrows(
+                                IllegalArgumentException.class,
+                                () -> {
+                                        Account.make(null);
+                                });
+                assertEquals(
+                                "line must not be null.",
+                                exception.getMessage());
+        }
 
-    @Test
-    public void toCSVDataValidation() {
-        Exception exception = assertThrows(
-                IllegalArgumentException.class,
-                () -> {
-                    Account.toCSV(null);
-                });
-        assertEquals("account must not be null.", exception.getMessage());
-    }
+        /*
+         * Test confirms that make preserves a given account data during the factory.
+         */
+        @Test
+        void testMakePreservesData() {
+                Account svaccount2 = Account.make(
+                                "savings,wz240833,Anna Gomez,8111.00");
+                assertEquals(
+                                svaccount.getID(),
+                                svaccount2.getID());
+                assertEquals(
+                                svaccount.getOwner(),
+                                svaccount2.getOwner());
+                assertEquals(
+                                svaccount.getType(),
+                                svaccount2.getType());
+                assertEquals(
+                                svaccount.getCurrentBalance(),
+                                svaccount2.getCurrentBalance(),
+                                1e-2);
+        }
 
-    @Test
-    public void toCSVTest() {
-        Account account = new Account("id", "Owner name", AccountType.CHECKING, 1.0);
-        String expectedResult = ("checking,id,Owner name,1.0");
-        assertEquals(expectedResult, Account.toCSV(account));
-    }
+        /*
+         * tests confirms that an account is successfully convert to a line
+         * into the CSV file.
+         */
+        @Test
+        void testToCSV() {
+                assertEquals(
+                                "savings,wz240833,Anna Gomez,8111.00",
+                                svaccount.toCSV());
+        }
+
+        /*
+         * Test confirms that credit() increases the account's balance successfully.
+         */
+        @Test
+        void credit() {
+                svaccount.credit(amount);
+                Double expectedResult = svaccount.getCurrentBalance();
+                assertEquals(
+                                8211.00, expectedResult);
+        }
+
+        /*
+         * Test confirms that credit() throws an exception on negative amount value.
+         */
+        @Test
+        void creditThrowsOnNegativeValue() {
+                amount = -50.00;
+                Exception exception = assertThrows(
+                                IllegalArgumentException.class,
+                                () -> {
+                                        svaccount.credit(amount);
+                                });
+                assertEquals(
+                                "amount must be positive.",
+                                exception.getMessage());
+        }
+
+        /*
+         * Test confirms that debit() reduces the account's balance successfully.
+         */
+        @Test
+        void debit() {
+                svaccount.debit(amount);
+                Double expectedResult = svaccount.getCurrentBalance();
+                assertEquals(
+                                8011.00, expectedResult);
+        }
+
+        /*
+         * Test confirms that debit() throws an exception on negative amount value.
+         */
+        @Test
+        void debitThrowsOnNegativeValue() {
+                amount = -50.00;
+                Exception exception = assertThrows(
+                                IllegalArgumentException.class,
+                                () -> {
+                                        svaccount.debit(amount);
+                                });
+                assertEquals(
+                                "amount must be positive.",
+                                exception.getMessage());
+        }
 }

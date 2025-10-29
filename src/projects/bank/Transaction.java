@@ -4,16 +4,13 @@ public abstract class Transaction {
     private double amount;
     private String accountID;
 
-    abstract boolean execute(Account account); // okay to return void, up to you
-
     protected Transaction(String accountNumber, double transactionAmt) {
         if (accountNumber == null) {
-            throw new IllegalArgumentException("account number cannot be null");
+            throw new IllegalArgumentException("account number cannot be null.");
         }
         if (transactionAmt <= 0) {
             throw new IllegalArgumentException(
-                "transaction amount must be positive"
-            );
+                    "transaction amount must be positive.");
         }
 
         amount = transactionAmt;
@@ -31,37 +28,43 @@ public abstract class Transaction {
 
     public abstract TransactionType getType();
 
+    public abstract boolean validate(Account account);
+
+    abstract void execute(Account account);
+
     /*
      * Factory method to create Transaction objects from a CSV line.
      * 
      * The line should be in the format:
      * 
-     * "withdrawal,<accountID>,<amount>" or "deposit,<accountID>,<amount>"
+     * "withdrawal,<accountID>,<amount>" or
+     * "deposit,<accountID>,<amount>"
      * 
      * @param line - CSV formatted string
      * 
      * @return Transaction object (either Withdrawal or Deposit)
      * 
-     * @throws IllegalArgumentException if the line is null or improperly formatted
+     * @throws IllegalArgumentException if the line is null or
+     * improperly formatted
      * 
      * or if the transaction type is unknown
      * 
      */
-    public static Transaction make(String line) {
+    protected static Transaction make(String line) {
         if (line == null) {
             throw new IllegalArgumentException("line must not be null.");
         }
         String[] token = line.split(",");
+        TransactionType type = TransactionType.valueOf(token[0].toUpperCase());
         String id = token[1];
         Double amount = Double.parseDouble(token[2]);
-        if (token[0].equals("withdrawal")) { // TODO use TransactionType
+        if (type == TransactionType.WITHDRAWAL) {
             Transaction wdraw = new Withdrawal(id, amount);
             return wdraw;
-        }
-        if (token[0].equals("deposit")) { // TODO use TransactionType and make this an else block
+        } else if (type == TransactionType.DEPOSIT) {
             Transaction dep = new Deposit(id, amount);
             return dep;
-        } else { // TODO remove
+        } else {
             throw new IllegalArgumentException("Invalid transaction type.");
         }
     }
@@ -83,7 +86,7 @@ public abstract class Transaction {
                 getAmount());
     }
 
-    /**
+    /*
      * Create a CSV line holding this transaction's data.
      * 
      * @return Eg, "savings,wz240833,Anna Gomez,8111.00"

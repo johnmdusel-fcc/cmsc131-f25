@@ -13,10 +13,9 @@ public class Bank {
     private static FileWriter writer;
     private static Transaction[] transactions;
     private static int transactionsCount;
-    private double dailyLimit = 1000.00;
     private static Account[] activeAccounts;
 
-    // This bank will hold 392 accounts for this project.
+    // Phase 1
     public Bank() {
         accounts = new Account[392];
         accountCount = 0;
@@ -95,6 +94,7 @@ public class Bank {
         return accountCount;
     }
 
+    // Phase 2
     /**
      * Read the file containing the bank accounts and fill the datatbase
      * 
@@ -153,10 +153,12 @@ public class Bank {
         }
     }
 
+    // Phase 3
+
     /**
      * Get all active accounts in the bank.
      * 
-     * * @return an array of all accounts in the bank.
+     * * @return an array of all active accounts in the bank.
      */
     public Account[] getAccounts() {
         activeAccounts = new Account[accountCount];
@@ -176,58 +178,67 @@ public class Bank {
      * 
      * @param transactionFile - The file containing the transactions.
      * 
-     * @return true if all transactions were processed successfully, false
-     * otherwise.
+     * @return transactions - an array of all the transactions listed in the file.
      * 
      * @throws FileNotFoundException if the transaction file is not found.
      */
     public Transaction[] loadTransactions(String transactionFile) {
-        Scanner scanner;
-        try {
-            scanner = new Scanner(new File(transactionFile));
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                if (line == null || line.isEmpty()) {
-                    Transaction trs = Transaction.make(line);
-                    if (trs != null) { // TODO remove this conditional, Transaction.make doesn't return null
-                        // ensure capacity
-                        if (transactionsCount >= transactions.length) {
-                            Transaction[] newTransactions = new Transaction[
-                                transactions.length * 2
-                            ];
-                            System.arraycopy(
-                                transactions, 0, 
-                                newTransactions, 0, transactions.length
-                            );
-                            transactions = newTransactions;
-                        }
-                        transactions[transactionsCount++] = trs;
+        if (transactionFile == null) {
+            throw new IllegalArgumentException("File cannot be null.");
+        } else {
+            try (
+                    Scanner scanner = new Scanner(new File(transactionFile))) {
+                while (scanner.hasNextLine()) {
+                    String line = scanner.nextLine();
+                    if ((line == null || line.isEmpty())) {
+                        throw new IllegalArgumentException("line cannot be null.");
                     } else {
-                        System.out.println("line cannot be null.");
+                        Transaction trs = Transaction.make(line);
+                        transactions[transactionsCount] = trs;
+                        transactionsCount++;
                     }
                 }
+                scanner.close();
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
             }
-            scanner.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         }
-        return transactions; 
-        // TODO this method could be problematic.
-        // The returned value could contain nulls, either because 
-        // the while loop left some elements of transactions undeclared
-        // or your code entered the catch block.
-        // So, any code that uses this method has to either guard against a 
-        // transaction being null, or rely on the value of transactionsCount.
-        // You're doing the latter in processTransactions.
-        // If you want to keep this method around, consider
-        // trimming `transactions` to remove nulls before returning. 
-        // Then you can get rid of transactionsCount and just iterate through 
-        // `transactions`.
+        return transactions;
+    }
+
+    /*
+     * This method holds the count of transactions in an array.
+     * 
+     * @return transactionsCount - count of all transactions
+     * loaded from the csv transactions file.
+     * 
+     */
+    public int getTransactions() {
+        return transactionsCount;
+    }
+
+    /*
+     * This method checks if an account exists in the bank
+     * 
+     * @param accountID - Unique account number
+     * 
+     * @return boolean
+     * true - if account exists
+     * false - if account does not exist
+     */
+    public boolean validateAcctExists(String accountID) {
+        int locateAccount = find(accountID);
+        if (locateAccount == -1) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     /*
      * Make process transactions return an int
-     * so it can count how many transactiosn were processed
+     * so it can count how many transactions were processed
      * 
      * Method processes all transactions and changes accounts
      * balances in the bank.
@@ -235,53 +246,40 @@ public class Bank {
      * @param Transaction [] transations - array of all the transactions
      * to be processed.
      * 
-     * @return boolean true once all trnasactions are processed.
+     * @return int count of processed transactions.
      *
      */
     public int processTransactions(Transaction[] transactions) {
-        int transactionsCount = 0;
-        for (int i = 0; i < transactionsCount; i++) { // TODO see comments starting line 215
-            Transaction trs = transactions[i];
-            if (trs != null) { // TODO remove this conditional 
-                               // Transaction.make returns non-null
-                               // and i < transactionsCount prevents accidentally 
-                            //    reading null array element
-                int acctIndex = find(trs.getAccountNumber());
-                if (acctIndex != -1) {
-                    Account acct = accounts[acctIndex];
-                    // TODO use polymorphism to simplify this logic
-                    //     avoid creating a new transaction
-                    //     first validate the transaction
-                    //         how to validate depends on transaction type
-                    //         => definition should be abstract for Transaction
-                    //            and implemented in in Deposit/Withdrawal
-                    //     then just call trs.execute
-                    if (trs.getType() == TransactionType.DEPOSIT) {
-                        trs = new Deposit(trs.getAccountNumber(), trs.getAmount());
-                        trs.execute(acct);
-                        transactionsCount++;
-                    } else if (trs.getType() == TransactionType.WITHDRAWAL) {
-                        trs = new Withdrawal(trs.getAccountNumber(), trs.getAmount());
-                        if (!(trs.getAmount() <= dailyLimit || trs.getAmount() <= acct.getCurrentBalance())) {
-                            trs.execute(acct);
-                            transactionsCount++;
-                        } else {
-                            System.out.println("We apologize as we are unable to disburse that amount.");
+        int transactionsProcessed = 0;
+        if (transactions == null) {
+            System.out.println("transactions must not be null.");
+        } else {
+            for (int i = 0; i < transactionsCount; i++) {
+                if (transactions[i] != null && validateAcctExists(transactions[i].getAccountNumber()) != true) {
+                    System.out.println("account could not be found for this transaction.");
+                } else if (transactions[i] != null && validateAcctExists(transactions[i].getAccountNumber()) == true) {
+                    int targetindex = find(transactions[i].getAccountNumber());
+
+                    if (transactions[i].getType() == TransactionType.DEPOSIT) {
+                        Transaction trs = new Deposit(transactions[i].getAccountNumber(),
+                                transactions[i].getAmount());
+                        if (trs.validate(accounts[targetindex]) == true) {
+                            trs.execute(accounts[targetindex]);
+
+                        }
+                    } else if (transactions[i].getType() == TransactionType.WITHDRAWAL) {
+                        Transaction trs = new Withdrawal(transactions[i].getAccountNumber(),
+                                transactions[i].getAmount());
+                        if (trs.validate(accounts[targetindex]) == true) {
+                            trs.execute(accounts[targetindex]);
+
                         }
                     }
-                } else {
-                    System.out.println("Account not found for this transaction.");
                 }
+
             }
+            transactionsProcessed++;
         }
-        return transactionsCount;
+        return transactionsProcessed;
     }
-
 }
-
-// Add a validate method (if validate, then...)
-// which will live in the transaction level as an abstract
-// concrete definition in each
-// public boolean validate
-// will return true in deposit
-// will be fully implemented in Withdrawal

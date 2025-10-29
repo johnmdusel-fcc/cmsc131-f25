@@ -7,6 +7,7 @@ public abstract class Account {
     private double currentBalance;
     protected final double dailyLimit = 2000.00;
 
+    // Phase 1
     /**
      * Each account will hold the following values:
      * 
@@ -21,17 +22,15 @@ public abstract class Account {
      * 
      */
     public Account(
-        String accountNumber,
-        String name,
-        double startingBalance
-    ) {
+            String accountNumber,
+            String name,
+            double startingBalance) {
         if (accountNumber == null) {
             throw new IllegalArgumentException("account ID cannot be empty.");
         }
         if (name == null) {
             throw new IllegalArgumentException(
-                "account owner's name cannot be empty."
-            );
+                    "account owner's name cannot be empty.");
         }
 
         accountID = accountNumber;
@@ -53,6 +52,7 @@ public abstract class Account {
 
     public abstract AccountType getType();
 
+    // Phase 2
     /*
      * Parses a line from a CSV file and creates the appropriate Account object.
      *
@@ -68,22 +68,27 @@ public abstract class Account {
             throw new IllegalArgumentException("line must not be null.");
         }
         String[] token = line.split(",");
-        String type = token[0]; // TODO use an AccountType here
+        AccountType type = AccountType.valueOf(token[0].toUpperCase());
         String id = token[1];
         String owner = token[2];
         double balance = Double.parseDouble(token[3]);
-        if (type.equals("checking")) { // TODO use an AccountType here
+        if (type == AccountType.CHECKING) {
             Account chacct = new CheckingAccount(id, owner, balance);
             return chacct;
-        } else if (type.equals("savings")) { // // TODO use an AccountType here and make it an else block
+        } else if (type == AccountType.SAVINGS) {
             Account svacct = new SavingsAccount(id, owner, balance);
             return svacct;
-        } else { // TODO remove
-            throw new IllegalArgumentException(
-                    "Unknown account type: " + token[0]);
+        } else {
+            throw new IllegalArgumentException("Invalid account type.");
         }
     }
 
+    /*
+     * Read an account parameters and format them into a String
+     * in this order accounttype (lowercase), accountID, accountOwner,
+     * accountBalance
+     * accountBalance will be able to carry up to two decimals
+     */
     @Override
     public String toString() {
         return String.format(
@@ -95,7 +100,7 @@ public abstract class Account {
     }
 
     /**
-     * CSV line holding this account's data.
+     * return a CSV line holding this account's data.
      * 
      * @return Eg, "savings,wz240833,Anna Gomez,8111.00"
      */
@@ -103,6 +108,7 @@ public abstract class Account {
         return toString();
     }
 
+    // Phase 3
     /*
      * Credits (deposits) the given amount to the account.
      *
@@ -130,12 +136,8 @@ public abstract class Account {
         if (amount < 0) {
             throw new IllegalArgumentException("amount must be positive.");
         } else {
-            if (amount < currentBalance) { // TODO this logic should be in Withdrawal
-                // Account can't debit more than the current balance
-                // on the account.
-                currentBalance -= amount;
-            }
 
+            currentBalance -= amount;
         }
     }
 }
