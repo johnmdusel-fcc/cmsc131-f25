@@ -13,11 +13,10 @@ public class BankTest {
     @BeforeEach
     void setup() {
         bank = new Bank();
-        acct = new Account(
+        acct = new CheckingAccount(
             "id0",
             "Owner Name",
-            1.0,
-            AccountType.SAVINGS
+            1.0
         );
     }
 
@@ -66,11 +65,10 @@ public class BankTest {
         for (int idx = 0; idx <= 100; idx++) {
             Integer id = idx;
             bank.add(
-                new Account(
+                new SavingsAccount(
                     id.toString(),
                     "Owner Name",
-                    1.0,
-                    AccountType.CHECKING
+                    1.0
                 )
             );
         }
@@ -208,14 +206,19 @@ public class BankTest {
 
     @Test
     void testProcessTransactionsFailure() {
-        // TODO
-        // pass bad filename and check number of transactions processed
+        assertEquals(
+            0,
+            bank.processTransactions("not/a/real.csv") // or null
+        );
     }
 
     @Test
     void testProcesTransactionsSuccess() {
-        // TODO
-        // pass data/testtransactions.csv and check number of transactions processed
+        // testtransactions.csv has 4 lines
+        assertEquals(
+            4,
+            bank.processTransactions("data/testtransactions.csv")
+        );
     }
 
 } // end: class BankTest

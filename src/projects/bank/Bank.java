@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class Bank {
@@ -133,7 +132,30 @@ public class Bank {
      * @return - Number of transactions that were processed.
      */
     public int processTransactions(String filename) {
-        throw new UnsupportedOperationException("Student must implement.");
+        int numTxProcessed = 0;
+        Scanner scan;
+        try {
+            scan = new Scanner(new File(filename));
+            while (scan.hasNextLine()) {
+                Transaction tx = Transaction.make(scan.nextLine());
+                try {
+                    Account acct = accounts[find(tx.getAccountID())];
+                    // bank controls execution
+                    if (tx.validate(acct)) {
+                        tx.execute(acct);
+                    }
+                } catch(ArrayIndexOutOfBoundsException e) {
+                    System.out.println(
+                        "Account " + tx.getAccountID() + " not found."
+                    );
+                }
+                numTxProcessed++;
+            }
+        } catch(FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return numTxProcessed;
+        // tested by testProcesTransactions{Failure,Success}
     }
 
 }

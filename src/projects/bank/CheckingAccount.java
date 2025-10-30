@@ -8,8 +8,7 @@ public class CheckingAccount extends Account {
 
     @Override
     public AccountType getType() {
-        // TODO
-        throw new UnsupportedOperationException("Student must implement.");
+        return AccountType.CHECKING;
     }
 
 }
