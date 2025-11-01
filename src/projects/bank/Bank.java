@@ -250,14 +250,15 @@ public class Bank {
      *
      */
     public int processTransactions(Transaction[] transactions) {
-        int transactionsProcessed = 0;
-        if (transactions == null) {
-            System.out.println("transactions must not be null.");
-        } else {
+
+        try {
+            Audit audit = new Audit("data/audit.log");
+            int transactionsProcessed = 0;
             for (int i = 0; i < transactionsCount; i++) {
                 if (transactions[i] != null && validateAcctExists(transactions[i].getAccountNumber()) != true) {
-                    System.out.println("account could not be found for this transaction.");
-                } else if (transactions[i] != null && validateAcctExists(transactions[i].getAccountNumber()) == true) {
+                    audit.recordNoSuchAccount(transactions[i]);
+                } else if (transactions[i] != null
+                        && validateAcctExists(transactions[i].getAccountNumber()) == true) {
                     int targetindex = find(transactions[i].getAccountNumber());
 
                     if (transactions[i].getType() == TransactionType.DEPOSIT) {
@@ -273,13 +274,20 @@ public class Bank {
                         if (trs.validate(accounts[targetindex]) == true) {
                             trs.execute(accounts[targetindex]);
 
+                        } else {
+                            audit.recordNonSufficientFunds(transactions[i], accounts[targetindex]);
                         }
                     }
                 }
-
+                transactionsProcessed++;
             }
-            transactionsProcessed++;
+            return transactionsProcessed;
+        } catch (
+
+        IOException e) {
+            System.err.println("Error instantianting AuditWithIOE xception" + e.getMessage());
         }
-        return transactionsProcessed;
+        return 0;
     }
+
 }
