@@ -4,6 +4,15 @@ public abstract class Transaction {
     private double amount;
     private String accountID;
 
+    /**
+     * Set a transaction default parameters.
+     * 
+     * @param accountNumber  - corresponding unique account identifier where the
+     *                       transaction applies, string value
+     * @param transactionAmt - amount of the transaction, positive double
+     * 
+     *                       This method is only accessible by its subclasses.
+     */
     protected Transaction(String accountNumber, double transactionAmt) {
         if (accountNumber == null) {
             throw new IllegalArgumentException("account number cannot be null.");
@@ -18,19 +27,53 @@ public abstract class Transaction {
 
     }
 
+    /**
+     * This method gets a given transaction's amount
+     * 
+     * @return amount - transaction's amount to be applies onto the account balance.
+     *         it should be a double value.
+     * 
+     */
     public double getAmount() {
         return amount;
     }
 
+    /**
+     * This method gets a given transaction's corresponding account number.
+     * 
+     * @return accountID - account unique identifier, string value
+     * 
+     */
     public String getAccountNumber() {
         return accountID;
     }
 
+    /*
+     * this method should return each Transaction type.
+     * It will be further defined in the subclasses.
+     */
     public abstract TransactionType getType();
 
+    /**
+     * This method confirm that a transaction can be operated on a given's account.
+     * 
+     * @param account - Account of the transaction
+     * 
+     * @return true - if transaction can be operated or
+     *         false - when the transaction cannot be operated on the account.
+     * 
+     *         This method will be further defined in the subclasses.
+     */
     public abstract boolean validate(Account account);
 
-    abstract void execute(Account account);
+    /**
+     * This method execute the transcation and affect the account's balance.
+     * 
+     * @param account - account to be modified by the transaction
+     * 
+     *                further implementation will occur in the subclasses.
+     */
+    public abstract void execute(Account account);
 
     /*
      * Factory method to create Transaction objects from a CSV line.

@@ -74,14 +74,14 @@ public class Audit {
     public void recordNonSufficientFunds(Transaction t, Account a) {
         write(
                 String.format(
-                        "%s [WARN]: nonsufficient funds: %s, but account balance is %s",
+                        "%s [WARN]: nonsufficient funds: %s, but account balance is %.2f",
                         Utils.timestamp(),
                         t.toString(),
                         a.getCurrentBalance()));
     }
 
     /**
-     * Write audit line for transaction execution.
+     * Write audit line for transforming Balance after transaction execution.
      * 
      * @param t - Transaction being executed.
      * @param a - Target account.
@@ -89,7 +89,7 @@ public class Audit {
     public void recordExecute(Transaction t, Account a) {
         write(
                 String.format(
-                        "%s [INFO]: %s, ending account balance is now %s",
+                        "%s [INFO]: %s, ending account balance is now %.2f",
                         Utils.timestamp(),
                         t.toString(),
                         a.getCurrentBalance()));

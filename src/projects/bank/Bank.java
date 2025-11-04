@@ -266,25 +266,23 @@ public class Bank {
                                 transactions[i].getAmount());
                         if (trs.validate(accounts[targetindex]) == true) {
                             trs.execute(accounts[targetindex]);
-
+                            transactionsProcessed++;
                         }
                     } else if (transactions[i].getType() == TransactionType.WITHDRAWAL) {
                         Transaction trs = new Withdrawal(transactions[i].getAccountNumber(),
                                 transactions[i].getAmount());
                         if (trs.validate(accounts[targetindex]) == true) {
                             trs.execute(accounts[targetindex]);
-
+                            transactionsProcessed++;
                         } else {
                             audit.recordNonSufficientFunds(transactions[i], accounts[targetindex]);
                         }
                     }
                 }
-                transactionsProcessed++;
+
             }
             return transactionsProcessed;
-        } catch (
-
-        IOException e) {
+        } catch (IOException e) {
             System.err.println("Error instantianting AuditWithIOE xception" + e.getMessage());
         }
         return 0;
