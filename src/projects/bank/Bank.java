@@ -1,3 +1,7 @@
+/** comments
+ * 
+ * minor stylistic point: consider removing the `return transactionsProcessed` statement at the end of the try-block, and replacing the `return 0` statement with `return transactionsProcessed`. that way, it's clear that you're returning the number of transactions processed, no matter if that turns out to be zero
+ */
 package projects.bank;
 
 import java.io.File;
