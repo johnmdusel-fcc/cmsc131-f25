@@ -1,3 +1,10 @@
+/** comments
+ * 
+ * why is the writer attribute static? i suggest that it be an instance attribute instead
+ * 
+ * 
+ */
+
 package projects.bank;
 
 import java.io.IOException;
