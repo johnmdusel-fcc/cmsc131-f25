@@ -1,5 +1,15 @@
 /** comments
  * 
+ * for loadTransactions
+ * --------------------
+ * because of promises made about the transaction.csv file integrity, you don't have to check `line` for being null or empty. but it's okay to do so.
+ * i like the way you encapsulated the existence-checking logic in validateAcctExists. in the hypothetical future, if the account storage were to change, you would only have to modify this method. downstream code would continue using the returned boolean as though nothing was different. very nice!
+ * 
+ * for processTransactions
+ * -----------------------
+ * because transactions[i] was created by Transaction.make, you are assured that transactions[i] will not be null
+ * directly use the boolean returned by validateAcctExists, rather than checking whether or not it equals `true`
+ * there's no need to re-declare a Deposit or Withdrawal once you've validated that the target account exists. use polymorphism! see https://github.com/johnmdusel-fcc/CoopProject/blob/main/src/Coop.java around line 134.
  * minor stylistic point: consider removing the `return transactionsProcessed` statement at the end of the try-block, and replacing the `return 0` statement with `return transactionsProcessed`. that way, it's clear that you're returning the number of transactions processed, no matter if that turns out to be zero
  */
 package projects.bank;
@@ -259,10 +269,12 @@ public class Bank {
             Audit audit = new Audit("data/audit.log");
             int transactionsProcessed = 0;
             for (int i = 0; i < transactionsCount; i++) {
-                if (transactions[i] != null && validateAcctExists(transactions[i].getAccountNumber()) != true) {
+
+                if (!validateAcctExists(transactions[i].getAccountNumber())) {
                     audit.recordNoSuchAccount(transactions[i]);
-                } else if (transactions[i] != null
-                        && validateAcctExists(transactions[i].getAccountNumber()) == true) {
+                } else if (
+                    validateAcctExists(transactions[i].getAccountNumber())
+                ) {
                     int targetindex = find(transactions[i].getAccountNumber());
 
                     if (transactions[i].getType() == TransactionType.DEPOSIT) {
