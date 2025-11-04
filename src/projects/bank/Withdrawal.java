@@ -1,3 +1,9 @@
+/* comments
+ * 
+ * add auditing inside execute method
+ * 
+ * move auditing from bank class into the validate method
+*/
 package projects.bank;
 
 public class Withdrawal extends Transaction {

@@ -10,6 +10,7 @@
  * because transactions[i] was created by Transaction.make, you are assured that transactions[i] will not be null
  * directly use the boolean returned by validateAcctExists, rather than checking whether or not it equals `true`
  * there's no need to re-declare a Deposit or Withdrawal once you've validated that the target account exists. use polymorphism! see https://github.com/johnmdusel-fcc/CoopProject/blob/main/src/Coop.java around line 134.
+ * move the auditing inside the Deposit and Withdrawal classes' validate methods
  * minor stylistic point: consider removing the `return transactionsProcessed` statement at the end of the try-block, and replacing the `return 0` statement with `return transactionsProcessed`. that way, it's clear that you're returning the number of transactions processed, no matter if that turns out to be zero
  */
 package projects.bank;
