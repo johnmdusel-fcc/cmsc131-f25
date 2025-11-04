@@ -61,7 +61,7 @@ public class Audit {
         write(
                 String.format(
                         "%s [WARN]: no such account: %s",
-                        Utils.timestamp(),
+                        lib.Utils.timestamp(),
                         t.toString()));
     }
 
@@ -75,7 +75,7 @@ public class Audit {
         write(
                 String.format(
                         "%s [WARN]: nonsufficient funds: %s, but account balance is %.2f",
-                        Utils.timestamp(),
+                        lib.Utils.timestamp(),
                         t.toString(),
                         a.getCurrentBalance()));
     }
@@ -90,7 +90,7 @@ public class Audit {
         write(
                 String.format(
                         "%s [INFO]: %s, ending account balance is now %.2f",
-                        Utils.timestamp(),
+                        lib.Utils.timestamp(),
                         t.toString(),
                         a.getCurrentBalance()));
     }
