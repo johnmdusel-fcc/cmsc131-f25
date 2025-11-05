@@ -1,8 +1,3 @@
-/** comments
- * 
- * add auditing inside the execute method
- * 
- */
 package projects.bank;
 
 public class Deposit extends Transaction {
@@ -24,8 +19,9 @@ public class Deposit extends Transaction {
      * Deposit should only always validate as a default value.
      */
     @Override
-    public boolean validate(Account account) {
+    public boolean validate(Account account, Audit audit) {
         return true;
+
     }
 
     /**
@@ -33,7 +29,8 @@ public class Deposit extends Transaction {
      * affects the account balance.
      */
     @Override
-    public void execute(Account account) {
+    public void execute(Account account, Audit audit) {
         account.credit(getAmount());
+        audit.recordExecute(this, account);
     }
 }

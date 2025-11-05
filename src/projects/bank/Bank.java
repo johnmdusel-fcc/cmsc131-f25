@@ -1,18 +1,3 @@
-/** comments
- * 
- * for loadTransactions
- * --------------------
- * because of promises made about the transaction.csv file integrity, you don't have to check `line` for being null or empty. but it's okay to do so.
- * i like the way you encapsulated the existence-checking logic in validateAcctExists. in the hypothetical future, if the account storage were to change, you would only have to modify this method. downstream code would continue using the returned boolean as though nothing was different. very nice!
- * 
- * for processTransactions
- * -----------------------
- * because transactions[i] was created by Transaction.make, you are assured that transactions[i] will not be null
- * directly use the boolean returned by validateAcctExists, rather than checking whether or not it equals `true`
- * there's no need to re-declare a Deposit or Withdrawal once you've validated that the target account exists. use polymorphism! see https://github.com/johnmdusel-fcc/CoopProject/blob/main/src/Coop.java around line 134.
- * move the auditing inside the Deposit and Withdrawal classes' validate methods
- * minor stylistic point: consider removing the `return transactionsProcessed` statement at the end of the try-block, and replacing the `return 0` statement with `return transactionsProcessed`. that way, it's clear that you're returning the number of transactions processed, no matter if that turns out to be zero
- */
 package projects.bank;
 
 import java.io.File;
@@ -205,16 +190,11 @@ public class Bank {
                     Scanner scanner = new Scanner(new File(transactionFile))) {
                 while (scanner.hasNextLine()) {
                     String line = scanner.nextLine();
-                    if ((line == null || line.isEmpty())) {
-                        throw new IllegalArgumentException("line cannot be null.");
-                    } else {
-                        Transaction trs = Transaction.make(line);
-                        transactions[transactionsCount] = trs;
-                        transactionsCount++;
-                    }
+                    Transaction trs = Transaction.make(line);
+                    transactions[transactionsCount] = trs;
+                    transactionsCount++;
                 }
                 scanner.close();
-
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
@@ -265,44 +245,30 @@ public class Bank {
      *
      */
     public int processTransactions(Transaction[] transactions) {
-
+        int transactionsProcessed = 0;
         try {
             Audit audit = new Audit("data/audit.log");
-            int transactionsProcessed = 0;
             for (int i = 0; i < transactionsCount; i++) {
-
-                if (!validateAcctExists(transactions[i].getAccountNumber())) {
-                    audit.recordNoSuchAccount(transactions[i]);
-                } else if (
-                    validateAcctExists(transactions[i].getAccountNumber())
-                ) {
-                    int targetindex = find(transactions[i].getAccountNumber());
-
-                    if (transactions[i].getType() == TransactionType.DEPOSIT) {
-                        Transaction trs = new Deposit(transactions[i].getAccountNumber(),
-                                transactions[i].getAmount());
-                        if (trs.validate(accounts[targetindex]) == true) {
-                            trs.execute(accounts[targetindex]);
-                            transactionsProcessed++;
-                        }
-                    } else if (transactions[i].getType() == TransactionType.WITHDRAWAL) {
-                        Transaction trs = new Withdrawal(transactions[i].getAccountNumber(),
-                                transactions[i].getAmount());
-                        if (trs.validate(accounts[targetindex]) == true) {
-                            trs.execute(accounts[targetindex]);
-                            transactionsProcessed++;
-                        } else {
-                            audit.recordNonSufficientFunds(transactions[i], accounts[targetindex]);
-                        }
+                if (validateAcctExists(transactions[i].getAccountNumber())) {
+                    Account target = accounts[(find(transactions[i].getAccountNumber()))];
+                    if (transactions[i].validate(target, audit)) {
+                        transactions[i].execute(target, audit);
+                        transactionsProcessed++;
                     }
+                } else {
+                    // target account absent
+                    audit.recordNoSuchAccount(transactions[i]);
+
                 }
 
             }
-            return transactionsProcessed;
-        } catch (IOException e) {
-            System.err.println("Error instantianting AuditWithIOE xception" + e.getMessage());
-        }
-        return 0;
-    }
+            audit.close();
+        } catch (
 
+        IOException e) {
+            // problem with Audit constructor
+            e.printStackTrace();
+        }
+        return transactionsProcessed;
+    }
 }

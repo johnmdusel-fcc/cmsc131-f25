@@ -100,7 +100,7 @@ public class AccountTest {
         @Test
         void credit() {
                 svaccount.credit(amount);
-                Double expectedResult = svaccount.getCurrentBalance();
+                Double expectedResult = svaccount.setNewBalance();
                 assertEquals(
                                 8211.00, expectedResult);
         }
@@ -127,7 +127,7 @@ public class AccountTest {
         @Test
         void debit() {
                 svaccount.debit(amount);
-                Double expectedResult = svaccount.getCurrentBalance();
+                Double expectedResult = svaccount.setNewBalance();
                 assertEquals(
                                 8011.00, expectedResult);
         }

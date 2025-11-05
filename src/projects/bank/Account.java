@@ -5,7 +5,7 @@ public abstract class Account {
     private final String accountID;
     private final String accountOwnerName;
     private double currentBalance;
-    protected final double dailyLimit = 2000.00;
+    private double newBal;
 
     // Phase 1
     /**
@@ -120,7 +120,7 @@ public abstract class Account {
         if (amount < 0) {
             throw new IllegalArgumentException("amount must be positive.");
         }
-        currentBalance += amount;
+        newBal = currentBalance + amount;
     }
 
     /*
@@ -137,7 +137,19 @@ public abstract class Account {
             throw new IllegalArgumentException("amount must be positive.");
         } else {
 
-            currentBalance -= amount;
+            newBal = currentBalance - amount;
         }
+    }
+
+    /**
+     * NEW!!
+     * 
+     * Method returns the new account balance
+     * post-execution
+     * 
+     * @return newBalance = the account's new balance;
+     */
+    public double setNewBalance() {
+        return newBal;
     }
 }

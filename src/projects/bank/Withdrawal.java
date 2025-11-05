@@ -29,13 +29,13 @@ public class Withdrawal extends Transaction {
      * 
      */
     @Override
-    public boolean validate(Account account) {
+    public boolean validate(Account account, Audit audit) {
         if (getAmount() < account.getCurrentBalance()) {
             // Account can't debit more than the current balance
             // on the account as overdrafts are not allowed in this bank.
             return true;
         } else {
-            System.out.println("Non-Sufficient Funds in this account.");
+            audit.recordNonSufficientFunds(this, account);
             return false;
         }
     }
@@ -45,7 +45,8 @@ public class Withdrawal extends Transaction {
      * affects the account balance.
      */
     @Override
-    public void execute(Account account) {
+    public void execute(Account account, Audit audit) {
         account.debit(getAmount());
+        audit.recordExecute(this, account);
     }
 }

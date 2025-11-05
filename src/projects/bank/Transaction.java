@@ -64,7 +64,7 @@ public abstract class Transaction {
      * 
      *         This method will be further defined in the subclasses.
      */
-    public abstract boolean validate(Account account);
+    public abstract boolean validate(Account account, Audit audit);
 
     /**
      * This method execute the transcation and affect the account's balance.
@@ -73,7 +73,7 @@ public abstract class Transaction {
      * 
      *                further implementation will occur in the subclasses.
      */
-    public abstract void execute(Account account);
+    public abstract void execute(Account account, Audit audit);
 
     /*
      * Factory method to create Transaction objects from a CSV line.

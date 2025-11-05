@@ -6,14 +6,16 @@ package projects.bank;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.io.IOException;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class TransactionTest {
 
     private Account ckgAccount;
-    private Transaction defaultDeposit, defaultWithdrawal;
-
+    private Transaction defaultDeposit, defaultWithdrawal, overdraft;
+    private Audit audit;
     /*
      * Setting up the transaction class with
      * a checking account,
@@ -27,6 +29,12 @@ public class TransactionTest {
         ckgAccount = new CheckingAccount("id", "owner", 10.0);
         defaultDeposit = new Deposit("id", 2.51);
         defaultWithdrawal = new Withdrawal("id", 1.75);
+        overdraft = new Withdrawal("id", 20.00);
+        try {
+            audit = new Audit("data/audittest.log");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /*
@@ -118,42 +126,42 @@ public class TransactionTest {
      * Test confirms that validate() a deposit returns true.
      */
     @Test
-    void validateDepositTest() {
-        assertEquals(true, defaultDeposit.validate(ckgAccount));
-    }
+    void validateAndExecuteCorrectnessTest() {
+        // checking account is initialized with a $10 balance.
 
-    /*
-     * Test confirms that validate() a Withdrawal returns "true" when
-     * the transaction amount is less than the account balance.
-     * otherwise, it will return "false".
-     */
-    @Test
-    void testValidateWithdrawal() {
-        Transaction defaultWithdrawal2 = new Withdrawal("id", 11.75);
-        assertEquals(true, defaultWithdrawal.validate(ckgAccount));
-        assertEquals(false, defaultWithdrawal2.validate(ckgAccount));
-    }
+        assertEquals(// check deposit can execute on account
+                true, // expected
+                defaultDeposit.validate(ckgAccount, audit));// actual
 
-    /*
-     * Test confirms that execute() a deposit successfully work
-     * because the new account balance increases by the transaction amount.
-     */
-    @Test
-    void executeDepositTest() {
-        ckgAccount.credit(defaultDeposit.getAmount());
-        double endingBalance = ckgAccount.getCurrentBalance();
-        assertEquals(12.51, endingBalance);
-    }
+        assertEquals( // check withdrawal of $20 can execute on account
+                false, // expected
+                overdraft.validate(ckgAccount, audit));// actual
 
-    /*
-     * Test confirms that execute() a withdrawal successfully work
-     * because the new account balance decreases by the transaction amount.
-     */
-    @Test
-    void testExecuteWithdrawal() {
-        ckgAccount.debit(defaultWithdrawal.getAmount());
-        double endingBalance = ckgAccount.getCurrentBalance();
-        assertEquals(8.25, endingBalance);
+        defaultDeposit.execute(ckgAccount, audit);
+        // account was credited of $2.51
+        assertEquals(// check if new balance can support the overdraft withdrawal
+                false, // expected
+                overdraft.validate(ckgAccount, audit));// actual
+
+        defaultDeposit.execute(ckgAccount, audit); // a $2.51 deposit is now applied
+        double endingBalance = ckgAccount.setNewBalance(); // getting new balance on account
+        assertEquals( // checking if new balance reflects the credit operation
+                12.51, // expected
+                endingBalance); // actual
+
+        ckgAccount.debit(defaultWithdrawal.getAmount()); // withdrawal is now applied
+        endingBalance = ckgAccount.setNewBalance(); // getting new balance on account
+        assertEquals(// checking if new balance reflects the credit operation
+                8.25, // expected
+                endingBalance); // actual
+
+        defaultWithdrawal.execute(ckgAccount, audit);
+        // this withdrawal is of $1.75 and should execute
+        assertEquals(// Ckeck new balance is accurately reflected
+                8.25, // expected
+                ckgAccount.setNewBalance()// actual
+        );
+
     }
 
 }// end: class TransactionTest

@@ -1,10 +1,3 @@
-/** comments
- * 
- * why is the writer attribute static? i suggest that it be an instance attribute instead
- * 
- * 
- */
-
 package projects.bank;
 
 import java.io.IOException;
@@ -12,7 +5,8 @@ import java.io.FileWriter;
 
 public class Audit {
 
-    private static FileWriter writer;
+    // Phase 4
+    private FileWriter writer;
 
     /**
      * Create a new output stream. Stays open during this instance's lifepan.
@@ -99,7 +93,6 @@ public class Audit {
                         "%s [INFO]: %s, ending account balance is now %.2f",
                         lib.Utils.timestamp(),
                         t.toString(),
-                        a.getCurrentBalance()));
+                        a.setNewBalance()));
     }
-
 }

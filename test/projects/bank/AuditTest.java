@@ -11,6 +11,8 @@ import java.util.Scanner;
 
 public class AuditTest {
 
+    // Phase 4
+
     private String fileName;
     private Audit audit;
 
@@ -124,7 +126,7 @@ public class AuditTest {
                             String.format(
                                     "[INFO]: %s, ending account balance is now %.2f",
                                     t.toString(),
-                                    a.getCurrentBalance())));
+                                    a.setNewBalance())));
 
             assertEquals(false, scan.hasNextLine());
             scan.close();
