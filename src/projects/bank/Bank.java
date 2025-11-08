@@ -130,28 +130,36 @@ public class Bank {
      * Process transactions that are stored in a CSV file.
      * @param filename - Points to CSV file.
      * @return - Number of transactions that were processed.
+     * @throws IOException If auditor cannot initialize to "phase4.log" file
      */
     public int processTransactions(String filename) {
         int numTxProcessed = 0;
-        Scanner scan;
         try {
-            scan = new Scanner(new File(filename));
-            while (scan.hasNextLine()) {
-                Transaction tx = Transaction.make(scan.nextLine());
-                try {
-                    Account acct = accounts[find(tx.getAccountID())];
-                    // bank controls execution
-                    if (tx.validate(acct)) {
-                        tx.execute(acct);
+            Audit audit = new Audit("phase4.log");
+            // Scanner scan;
+            try {
+                Scanner scan = new Scanner(new File(filename));
+                while (scan.hasNextLine()) {
+                    Transaction tx = Transaction.make(scan.nextLine());
+                    int acctIdx = find(tx.getAccountID());
+                    if (acctIdx >= 0) {
+                        Account acct = accounts[acctIdx];
+                        if (tx.validate(acct, audit)) {
+                            tx.execute(acct, audit);
+                        }
+                    } else {
+                        audit.recordNSA(tx);
                     }
-                } catch(ArrayIndexOutOfBoundsException e) {
-                    System.out.println(
-                        "Account " + tx.getAccountID() + " not found."
-                    );
+                    numTxProcessed++;
                 }
-                numTxProcessed++;
+                scan.close();
+            } catch(FileNotFoundException e) {
+                // Bad transactions tile
+                e.printStackTrace();
             }
-        } catch(FileNotFoundException e) {
+            audit.close();
+        } catch (IOException e) {
+            // Bad audit file
             e.printStackTrace();
         }
         return numTxProcessed;

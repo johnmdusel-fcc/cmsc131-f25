@@ -7,14 +7,26 @@ public class Withdrawal extends Transaction {
     }
 
     @Override
-    public void execute(Account account) {
+    public void execute(Account account, Audit audit) {
         account.debit(getAmount()); // tested by testExecuteWithdrawal
+        audit.recordValid(this, account);
     }
 
     @Override 
-    public boolean validate(Account account) {
-        return getAmount() <= account.getBalance();
+    public boolean validate(Account account, Audit audit) {
+        boolean boolNSF = getAmount() <= account.getBalance();
+        if (!boolNSF) {
+            audit.recordNSF(this, account);
+        }
+        return boolNSF;
         // tested by testValidateWithdrawal
+    }
+
+    @Override // overrides Object definition, not Transaction definition
+    public String toString() {
+        return String.format(
+            "withdraw $%.2f from account %s", amount, accountID
+        );
     }
 
 }

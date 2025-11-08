@@ -7,13 +7,21 @@ public class Deposit extends Transaction {
     }
 
     @Override
-    public void execute(Account account) {
+    public void execute(Account account, Audit audit) {
         account.credit(getAmount()); // tested by testExecuteDeposit
+        audit.recordValid(this, account);
     }
 
     @Override 
-    public boolean validate(Account account) {
+    public boolean validate(Account account, Audit audit) {
         return true; // tested by testValidateDeposit
+    }
+
+    @Override // overrides Object definition, not Transaction definition
+    public String toString() {
+        return String.format(
+            "deposit $%.2f into account %s", amount, accountID
+        );
     }
 
 }
