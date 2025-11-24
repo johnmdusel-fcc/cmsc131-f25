@@ -18,7 +18,7 @@ Once the grid model is tested and documented, you will use it to implement a mod
 - [ ] Add more unit tests to ensure complete coverage.
 - [ ] Add javadocs to the important methods. Add comments in code if you like.
 
-### 1.1 Extend the starter code to be useful for the maze project
+### 1.2 Extend the starter code to be useful for the maze project
 Design notes are in the headers of Maze.java and MazeCell.java. 
 You can also read the Main routine and see what methods are required, 
 and work backwards from there.
