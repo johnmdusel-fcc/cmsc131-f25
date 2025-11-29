@@ -7,6 +7,11 @@ import java.util.Scanner;
 public class MazeReader {
 
     public static Maze load(String filename) {
+        if (filename == null) {
+            throw new IllegalArgumentException(
+                "Parameter filename cannot be null"
+            );
+        }
         Scanner scanner;
         int spaceCount = countSpacesIn( filename );
         if (spaceCount == 0) {

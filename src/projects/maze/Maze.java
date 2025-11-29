@@ -64,6 +64,11 @@ public class Maze {
      * @return Array containing coordinates of neighbor cells in this maze.
      */
     public Coords[] discoverNeighbors(Cell cell) {
+        if (cell == null) {
+            throw new IllegalArgumentException(
+                "Parameter cell cannot be null"
+            );
+        }
         Coords coords = cell.getCoords();
         Coords[] potentialNeighbors = {
             new Coords(coords.getRow() - 1, coords.getCol()), // north
