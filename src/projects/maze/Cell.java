@@ -29,6 +29,12 @@ public class Cell {
     private CellStatus status;
 
     public Cell(Coords c, CellStatus s) {
+        if (c == null) {
+            throw new IllegalArgumentException("Parameter c cannot be null");
+        }
+        if (s == null) {
+            throw new IllegalArgumentException("Parameter s cannot be null");
+        }
         coords = c;
         explored = false;
         status = s;

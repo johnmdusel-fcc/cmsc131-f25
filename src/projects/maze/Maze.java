@@ -35,6 +35,11 @@ public class Maze {
     }
 
     private Cell getFirstCellWithStatus(CellStatus status) {
+        if (status == null) {
+            throw new IllegalArgumentException(
+                "Parameter status cannot be null"
+            );
+        }
         Cell[] cells = grid.getAllCells();
         for (int idx = 0; idx < cells.length; idx++) {
             if (cells[idx].getStatus() == status) {
@@ -53,10 +58,20 @@ public class Maze {
     }
 
     public boolean insertCell(Cell cell) {
+        if (cell == null) {
+            throw new IllegalArgumentException(
+                "Parameter cell cannot be null"
+            );
+        }
         return grid.insertCell(cell);
     }
 
     public Coords[] discoverNeighbors(Cell cell) {
+        if (cell == null) {
+            throw new IllegalArgumentException(
+                "Parameter cell cannot be null"
+            );
+        }
         Coords coords = cell.getCoords();
         Coords[] potentialNeighbors = {
             new Coords(coords.getRow() + 1, coords.getCol()), // north
@@ -88,6 +103,11 @@ public class Maze {
     }
 
     public void serialize(String filename) {
+        if (filename == null) {
+            throw new IllegalArgumentException(
+                "Parameter filename cannot be null"
+            );
+        }
         Cell[] cells = getAllCells();
 
         FileWriter writer;
