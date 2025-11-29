@@ -25,16 +25,90 @@ public class Maze {
         grid = new Grid(maxCells);
     }
 
-    public void discoverAndSetupNeighbors() {
-
+    public Cell[] getAllCells() {
+        Cell[] mazeCells = new Cell[grid.getCellCount()];
+        Cell[] cells = grid.getAllCells();
+        for (int idx = 0; idx < grid.getCellCount(); idx++) {
+            mazeCells[idx] = cells[idx];
+        }
+        return mazeCells;
     }
 
-    /**
-     * Provided by Dusel. Assumes grid cell has a getStatus() method.
-     * @param filename - Output filename.
-     */
-    public void serialize(String filename) {
+    private Cell getFirstCellWithStatus(CellStatus status) {
+        if (status == null) {
+            throw new IllegalArgumentException(
+                "Parameter status cannot be null"
+            );
+        }
         Cell[] cells = grid.getAllCells();
+        for (int idx = 0; idx < cells.length; idx++) {
+            if (cells[idx].getStatus() == status) {
+                return cells[idx];
+            }
+        }
+        return null;
+    }
+
+    private Cell getEnd() {
+        return getFirstCellWithStatus(CellStatus.E);
+    }
+
+    private Cell getStart() {
+        return getFirstCellWithStatus(CellStatus.S);
+    }
+
+    public boolean insertCell(Cell cell) {
+        if (cell == null) {
+            throw new IllegalArgumentException(
+                "Parameter cell cannot be null"
+            );
+        }
+        return grid.insertCell(cell);
+    }
+
+    public Coords[] discoverNeighbors(Cell cell) {
+        if (cell == null) {
+            throw new IllegalArgumentException(
+                "Parameter cell cannot be null"
+            );
+        }
+        Coords coords = cell.getCoords();
+        Coords[] potentialNeighbors = {
+            new Coords(coords.getRow() + 1, coords.getCol()), // north
+            new Coords(coords.getRow() - 1, coords.getCol()), // south
+            new Coords(coords.getRow(), coords.getCol() + 1), // east
+            new Coords(coords.getRow(), coords.getCol() - 1) // west
+        };
+        Coords[] neighbors = new Coords[potentialNeighbors.length];
+        int neighborsCount = 0;
+        for (Coords offset : potentialNeighbors) {
+            if (grid.getCell(offset) != null) {
+                neighbors[neighborsCount++] = offset;
+            }
+        }
+        Coords[] toReturn = new Coords[neighborsCount];
+        for (int idx = 0; idx < neighborsCount; idx++) { // trim nulls
+            toReturn[idx] = neighbors[idx];
+        }
+        return toReturn;
+    }
+
+    public void discoverAndSetupNeighbors() {
+        Cell[] cells = grid.getAllCells();
+        for (int idxCell = 0; idxCell < cells.length; idxCell++) {
+            Cell cell = cells[idxCell];
+            Coords[] neighbors = discoverNeighbors(cell);
+            cell.setNeighbors(neighbors);
+        }
+    }
+
+    public void serialize(String filename) {
+        if (filename == null) {
+            throw new IllegalArgumentException(
+                "Parameter filename cannot be null"
+            );
+        }
+        Cell[] cells = getAllCells();
 
         FileWriter writer;
         try {

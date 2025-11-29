@@ -11,14 +11,20 @@ public class Grid {
     }
 
     public boolean insertCell(Cell cell) {
+        if (cell == null) {
+            throw new IllegalArgumentException("Parameter cell cannot be null");
+        }
         if (cellCount < cells.length) {
-            cells[++cellCount] = cell;
+            cells[cellCount++] = cell;
             return true;
         }
         return false;
     }
 
     public Cell getCell(Coords vh) {
+        if (vh == null) {
+            throw new IllegalArgumentException("Parameter vh cannot be null");
+        }
         for (int idx = 0; idx < cellCount; idx++) {
             if ( cells[idx].getCoords().equals(vh) ) {
                return cells[idx];

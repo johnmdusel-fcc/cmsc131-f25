@@ -1,5 +1,8 @@
 package projects.maze;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 public class Main {
 
     static void phase1() {
