@@ -34,5 +34,40 @@ X O O O X O X X
 X O X O X O O E 
 ```
 
+# Phase 2. Maze solving
+
+Add a feature that will find a path from `S` to `E` using depth-first traversal with backtracking. 
+
+# Checklist
+
+# 2.1 Depth-first traversal
+- [ ] Add a `solve` method to your maze class.
+
+```
+public boolean solve() {
+    Cell startCell = getStart();
+    return explorePath(startCell);
+}
+```
+
+- [ ] Add an `explorePath` method to your maze class.
+
+```
+private boolean explorePath(Cell currentCell) {
+    // Student fills in method body   
+}
+```
+
+- [ ] Fill in the body of `explorePath` to implement a depth-first traversal. Consider printing the coordinates of the cells being explored, so you can inspect the output for correctness. 
+
+Bear these points in mind: 
+- The traversal order is sensitive to your implementation of `Maze::discoverAndSetupNeighbors`. For example, if adding neighbors in the order of `{North, South, East, West}` can yield a different traversal order than `{North, East, South, West}`.
+- The `Cell::explored` attribute gets mutated from `false` (default) to `true` when a cell is traversed.
+- The boolean return value is for the maze logic step. At this point you can just let `explorePath` return `true`.
 
 
+# 2.2 Maze solving logic
+
+- [ ] Enhance the `explorePath` method to mutate the status of each cell being traversed. 
+
+- [ ] Run the updated main routine against the sample mazes. Visually inspect the serialized solutions.
