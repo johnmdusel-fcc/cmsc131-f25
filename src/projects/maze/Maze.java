@@ -1,16 +1,3 @@
-/** Maze class specification
-
-- `Maze(int maxCells)` - pre-allocates array to maximum size
-
-- `getStart()` - finds and returns the cell with Status Start
-
-- `getEnd()` - finds and returns the cell with Status End
-    - Consider writing a helper method `getFirstCellWithStatus(Status)` which does linear search
-
-- setupNeighbors() populates the neighbors list of each cell in the grid
-
- */
-
 package projects.maze;
 
 import java.io.File;
@@ -57,6 +44,11 @@ public class Maze {
         return getFirstCellWithStatus(CellStatus.S);
     }
 
+    /**
+     * Alias for this maze's underlying grid::insertCell.
+     * @param cell Cell to be inserted.
+     * @return true if and only insertion is successful.
+     */
     public boolean insertCell(Cell cell) {
         if (cell == null) {
             throw new IllegalArgumentException(
@@ -66,16 +58,17 @@ public class Maze {
         return grid.insertCell(cell);
     }
 
+    /**
+     * This method is public for testing purposes only. 
+     * See javadoc for {@code Maze::discoverAndSetupNeighbors}
+     * @param cell Not validated, due to usage in discoverAndSetupNeighbors.
+     * @return Array containing coordinates of neighbor cells in this maze.
+     */
     public Coords[] discoverNeighbors(Cell cell) {
-        if (cell == null) {
-            throw new IllegalArgumentException(
-                "Parameter cell cannot be null"
-            );
-        }
         Coords coords = cell.getCoords();
         Coords[] potentialNeighbors = {
-            new Coords(coords.getRow() + 1, coords.getCol()), // north
-            new Coords(coords.getRow() - 1, coords.getCol()), // south
+            new Coords(coords.getRow() - 1, coords.getCol()), // north
+            new Coords(coords.getRow() + 1, coords.getCol()), // south
             new Coords(coords.getRow(), coords.getCol() + 1), // east
             new Coords(coords.getRow(), coords.getCol() - 1) // west
         };
@@ -93,6 +86,10 @@ public class Maze {
         return toReturn;
     }
 
+    /**
+     * Populates {@code neighbors} attribute of each cell in this maze's 
+     * underlying grid. Neighbor cells are scanned in NSEW order.
+     */
     public void discoverAndSetupNeighbors() {
         Cell[] cells = grid.getAllCells();
         for (int idxCell = 0; idxCell < cells.length; idxCell++) {

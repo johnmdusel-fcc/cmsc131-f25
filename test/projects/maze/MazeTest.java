@@ -8,6 +8,11 @@ public class MazeTest {
     private Maze maze;
 
     @BeforeEach
+    /**
+     * X,S,X,X
+     * X,O,O,E
+     * X,O,X,X
+     */
     void setup() {
         String sourceOfTruth = "data/test_maze.txt"; //
         maze = MazeReader.load(sourceOfTruth);
@@ -34,4 +39,36 @@ public class MazeTest {
             assertEquals(cell.getStatus(), cellStatuses[idx]);
         }
     }
+    
+    @Test
+    void testDiscoverNeighbors(){
+        Coords[] expected = { // NSEW ordering like Maze::discoverNeighbors
+            new Coords(0, 1), 
+            new Coords(2, 1),
+            new Coords(1, 2),
+        };
+        Coords[] actual = maze.discoverNeighbors(
+            new Cell(
+                new Coords(1, 1), 
+                CellStatus.O
+            )
+        );
+        assertEquals(expected.length, actual.length);
+        for (int idx = 0; idx < expected.length; idx++){
+            assertTrue(expected[idx].equals(actual[idx]));
+        }
+    }
+
+    @Test
+    /**
+     * Maze::getAllCells is supposed to trim nulls from the end of its grid
+     */
+    void testGetAllCells(){
+        Maze testMaze = new Maze(2);
+        Cell testCell = new Cell(new Coords(0, 0), CellStatus.O);
+        testMaze.insertCell(testCell);
+        assertEquals(1, testMaze.getAllCells().length);
+        assertEquals(testCell, testMaze.getAllCells()[0]);
+    }
+
 }

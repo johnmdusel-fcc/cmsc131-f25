@@ -1,24 +1,3 @@
-/** `Cell` class additions
-
-Extra attributes
-
-- `neighbors` (Coords[]) - coordinates of neighbors
-    - needs accessor/mutator
-
-- `explored` (boolean) - traversal flag (defaults to false)
-    - needs accessor/mutator
-
-- `status` (CellStatus enum) - cell's role/state
-    - Enum values    
-        - `S` maze entrance
-        - `E` maze exit  
-        - `O` open cell
-        - `P` part of solution path
-    - Needs accessor/mutator
-
-A cell will be constructed with a coordinates and a status. Decide for yourself what are sensible default values (if any) for the other attributes.
- */
-
 package projects.maze;
 
 public class Cell {
@@ -28,6 +7,12 @@ public class Cell {
     private boolean explored;
     private CellStatus status;
 
+    /**
+     * Construct a new cell from the given coordinates and cell status. 
+     * Defaults to unexplored state.
+     * @param c Coordinates of this cell
+     * @param s Status of this cell
+     */
     public Cell(Coords c, CellStatus s) {
         if (c == null) {
             throw new IllegalArgumentException("Parameter c cannot be null");
