@@ -12,13 +12,12 @@ public class Maze {
         grid = new Grid(maxCells);
     }
 
+    /**
+     * Alias for {@code grid::getAllCells} for underlying grid.
+     * @return Array of all cells in this maze, without {@code null} elements.
+     */
     public Cell[] getAllCells() {
-        Cell[] mazeCells = new Cell[grid.getCellCount()];
-        Cell[] cells = grid.getAllCells();
-        for (int idx = 0; idx < grid.getCellCount(); idx++) {
-            mazeCells[idx] = cells[idx];
-        }
-        return mazeCells;
+        return grid.getAllCells();
     }
 
     private Cell getFirstCellWithStatus(CellStatus status) {
@@ -142,6 +141,14 @@ public class Maze {
             e.printStackTrace();
         }
         
+    }
+
+    public void depthFirstTraverse() {
+        dfs(getStart());
+    }
+
+    private void dfs(Cell c) {
+        // TODO
     }
 
 }
