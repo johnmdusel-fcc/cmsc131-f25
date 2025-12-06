@@ -32,6 +32,10 @@ public class Cell {
     public boolean isExplored() {
         return explored;
     }
+
+    public void setExplored(boolean updateExplored) {
+        explored = updateExplored;
+    }
     
     public Coords[] getNeighbors() {
         return neighbors;
@@ -43,6 +47,10 @@ public class Cell {
     
     public CellStatus getStatus() {
         return status;
+    }
+
+    public void setStatus(CellStatus updateStatus) {
+        status = updateStatus;
     }
 
 }
